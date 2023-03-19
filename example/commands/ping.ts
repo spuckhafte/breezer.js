@@ -5,7 +5,6 @@ export default class extends Command {
     constructor() {
         super({
             structure: [],
-            strict: true,
             name: 'ping'
         });
     }
@@ -16,6 +15,6 @@ export default class extends Command {
             allowedMentions: {
                 repliedUser: false
             }
-        })
+        });
     }
 }

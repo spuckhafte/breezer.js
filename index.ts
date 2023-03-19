@@ -1,7 +1,7 @@
 import discord, { Intents } from 'discord.js';
 import fs from 'fs';
 import { TypicalCommand, Command } from './helpers/command';
-import { testThisCommand } from './helpers/handlers';
+import { revealNameOfCmd } from './helpers/handlers';
 
 class Bot {
     commands:string[]; 
@@ -43,9 +43,11 @@ class Bot {
 
     start() {
         this.bot.on('messageCreate', async msg => {
-            const cmd = this.commandObjects.find(c => testThisCommand(msg.content, c, this.prefix));
+            const cmdName = revealNameOfCmd(msg.content, this.prefix);
+            if (!cmdName || !this.commands.includes(cmdName)) return;
+            let cmd = this.commandObjects.find(c => c.name == cmdName);
             if (!cmd) return;
-            cmd.content = msg.content.replace(this.prefix, '').trim();
+            cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
             await cmd.execute(msg);
         });
     }

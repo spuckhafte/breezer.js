@@ -34,13 +34,32 @@ export class Command {
             if (this.structure.length == 0)
                 throw Error(err("extracting from a field-less command.", this.name));
             
-            if (this.structure.length !== fields.length)
-                throw Error(err("the fields does not match with structure.", this.name));
+            if (this.structure.length !== fields.length) {
+                if (this.structure[this.structure.length - 1].includes('null')) {
+                    if ((this.structure.length - 1) !== fields.length)
+                        throw Error(err("the fields does not match with structure.", this.name));
+                } else throw Error(err("the fields does not match with structure.", this.name));
+            }
+        }
+
+        if (this.structure.length != 0 && this.structure[this.structure.length - 1].includes('null')) {
+            if (fields.length == this.structure.length - 1) {
+                if (fields[this.structure.length - 1] === undefined)
+                    fields[this.structure.length - 1] = '';
+            }
         }
 
         const extracted:(string|number)[] = [];
         for (let field in fields) {
             try {
+                if (+field == this.structure.length - 1 && +field !== fields.length - 1) {
+                    if (this.structure[field].includes('string')) {
+                        let value = fields.splice(+field).join(' ');
+                        extracted.push(value);
+                        return extracted;
+                    }
+                }
+
                 let data = extractFieldValuesHandler[
                     this.structure[field].split('|')[0] as 'number'|'string'
                 ](fields[field], this.strict, this.name);

@@ -18,6 +18,6 @@ export type CommandSettings = {
     */
     strict?:boolean,
 
-    /**Name of your command, same as the file's name */
+    /**name of the command*/
     name:string
 }

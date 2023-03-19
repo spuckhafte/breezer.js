@@ -18,9 +18,8 @@ export const extractFieldValuesHandler = {
     }
 }
 
-export function testThisCommand(content:string, cmd:TypicalCommand, prefix:string) {
+export function revealNameOfCmd(content:string, prefix:string) {
     content = content.trim();
     if (!content.startsWith(prefix)) return false;
-    if (content.replace(prefix, '').split(' ')[0] == cmd.name) return true;
-    else return false;
+    return content.replace(prefix, '').replace(/[ ]+/g, ' ').trim().split(' ')[0]
 }

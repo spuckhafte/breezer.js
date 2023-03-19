@@ -5,7 +5,7 @@ dotenv.config();
 const bot = new Bot({
     commandsFolder: 'commands',
     token: process.env.TOKEN as string,
-    prefix: 'r '
+    prefix: '!'
 });
 
 bot.login(() => console.log('Logged In'))
