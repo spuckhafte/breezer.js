@@ -1,12 +1,11 @@
-import { Bot } from '../index';
+import { Bot } from '../dist'
 import dotenv from 'dotenv';
 dotenv.config();
 
 const bot = new Bot({
-    commandsFolder: 'commands',
-    token: process.env.TOKEN as string,
-    prefix: '!'
-});
-
+    token: "ff",
+    prefix: "!",
+    commandsFolder: "!"
+})
 bot.login(() => console.log('Logged In'))
     .then(() => bot.start());

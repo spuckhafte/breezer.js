@@ -1,5 +1,5 @@
 import { Message, TextChannel } from "discord.js";
-import { Command } from "../../index";
+import { Command } from "../../dist";
 
 export default class extends Command {
     constructor() {

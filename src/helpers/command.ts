@@ -1,5 +1,5 @@
 import { Message } from "discord.js";
-import { CmdStructure, CommandSettings } from "../types";
+import { CmdStructure, CommandSettings } from "../../types";
 import { err } from "./funcs";
 import { extractFieldValuesHandler } from "./handlers";
 
