@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import discord, { Intents } from 'discord.js';
 import fs from 'fs';
-import { revealNameOfCmd } from './helpers/handlers';
+import { revealNameOfCmd } from './helpers/handlers.js';
 class Bot {
     constructor(options) {
         let intents = [

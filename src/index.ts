@@ -1,7 +1,7 @@
 import discord, { Intents } from 'discord.js';
 import fs from 'fs';
-import { TypicalCommand } from './helpers/command';
-import { revealNameOfCmd } from './helpers/handlers';
+import { TypicalCommand } from './helpers/command.js';
+import { revealNameOfCmd } from './helpers/handlers.js';
 
 class Bot {
     commands:string[]; 

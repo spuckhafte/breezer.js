@@ -1,6 +1,6 @@
 import { Intents } from 'discord.js'
-import { TypicalCommand } from './command';
-import { err } from './funcs'
+import { TypicalCommand } from './command.js';
+import { err } from './funcs.js'
 
 export const extractFieldValuesHandler = {
     'string': (data:string, strict:boolean, name:string|undefined) => {

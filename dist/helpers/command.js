@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { err } from "./funcs";
-import { extractFieldValuesHandler } from "./handlers";
+import { extractFieldValuesHandler } from "./handlers.js";
 const regex = {
     stateOperateExp: /{{[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+}}/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g

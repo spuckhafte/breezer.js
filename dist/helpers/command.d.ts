@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
-import { StateManager } from "./stateManager";
+import { StateManager } from "./stateManager.js";
 export declare class Command {
     structure: CmdStructure[];
     name?: string;

@@ -1,8 +1,8 @@
 import { Message } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { err } from "./funcs";
-import { extractFieldValuesHandler } from "./handlers";
-import { StateManager } from "./stateManager";
+import { extractFieldValuesHandler } from "./handlers.js";
+import { StateManager } from "./stateManager.js";
 
 
 const regex = {

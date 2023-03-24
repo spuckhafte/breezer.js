@@ -1,4 +1,4 @@
-import { err } from './funcs';
+import { err } from './funcs.js';
 export const extractFieldValuesHandler = {
     'string': (data, strict, name) => {
         if (strict && !isNaN(data))
