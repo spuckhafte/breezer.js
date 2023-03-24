@@ -1,5 +1,4 @@
 import discord from 'discord.js';
-import { Command } from './helpers/command';
 declare class Bot {
     commands: string[];
     bot: discord.Client;
@@ -15,4 +14,4 @@ declare class Bot {
     login(cb: CallableFunction): Promise<void>;
     start(): void;
 }
-export { Bot, Command };
+export default Bot;

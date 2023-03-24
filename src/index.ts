@@ -1,6 +1,6 @@
 import discord, { Intents } from 'discord.js';
 import fs from 'fs';
-import { TypicalCommand, Command } from './helpers/command';
+import { TypicalCommand } from './helpers/command';
 import { revealNameOfCmd } from './helpers/handlers';
 
 class Bot {
@@ -53,4 +53,4 @@ class Bot {
     }
 }
 
-export { Bot, Command };
+export default Bot;

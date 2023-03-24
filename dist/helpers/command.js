@@ -12,12 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TypicalCommand = exports.Command = void 0;
 const funcs_1 = require("./funcs");
 const handlers_1 = require("./handlers");
+const regex = {
+    stateOperateExp: /{{[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+}}/g,
+    stateExp: /\$[a-zA-Z0-9-]+\$/g
+};
 class Command {
     constructor(settings) {
         this.content = '';
         this.structure = settings.structure;
         this.name = settings.name;
         this.strict = !!settings.strict;
+        this.states = settings.states;
         if (settings.structure.length > 0) {
             let error = (0, funcs_1.err)("'nully' bit should be at last and present iff the structure size is more than 1", this.name);
             const nullCount = this.structure.filter(i => i.includes('null')).length;
@@ -25,6 +30,33 @@ class Command {
                 (nullCount > 1 && this.structure.length > 1))
                 throw Error(error);
         }
+        if (!this.states)
+            return;
+        const stateChangeHandler = () => __awaiter(this, void 0, void 0, function* () {
+            if (!this.msg || !this.states || !this.msgPayload)
+                return;
+            let oldPayLoadString = JSON.stringify(this.msgPayload);
+            let newPayloadString = formatString(oldPayLoadString, this.states);
+            if (oldPayLoadString == newPayloadString)
+                return;
+            let newPayload = typeof this.msgPayload == 'string'
+                ? newPayloadString : JSON.parse(newPayloadString);
+            // @ts-ignore
+            if (newPayload.allowedMentions != undefined) {
+                // @ts-ignore
+                delete newPayload.allowedMentions;
+            }
+            try {
+                yield this.msg.edit(newPayload);
+            }
+            catch (e) {
+                if (this.strict) {
+                    console.warn(`[warn] a msg for ${this.name} cmd got deleted, but a state is still being updated for it`);
+                }
+                this.states.event.removeListener('stateChange', stateChangeHandler);
+            }
+        });
+        this.states.event.on('stateChange', stateChangeHandler);
     }
     /**Extract fields from a command as per their defined structure */
     extract() {
@@ -75,6 +107,40 @@ class Command {
     execute(msg) {
         return __awaiter(this, void 0, void 0, function* () { });
     }
+    reply(msg, payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.msgPayload = payload;
+            if (!this.states) {
+                yield msg.reply(payload);
+                return;
+            }
+            let data;
+            if (typeof payload == 'string') {
+                data = formatString(payload, this.states);
+            }
+            else {
+                data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
+            }
+            this.msg = yield msg.reply(data);
+        });
+    }
+    send(msg, payload) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.msgPayload = payload;
+            if (!this.states) {
+                yield msg.reply(payload);
+                return;
+            }
+            let data;
+            if (typeof payload == 'string') {
+                data = formatString(payload, this.states);
+            }
+            else {
+                data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
+            }
+            this.msg = yield msg.channel.send(data);
+        });
+    }
 }
 exports.Command = Command;
 class TypicalCommand extends Command {
@@ -90,3 +156,42 @@ class TypicalCommand extends Command {
     }
 }
 exports.TypicalCommand = TypicalCommand;
+function formatString(text, states) {
+    if (!checkForOperation(text))
+        return stateExtracter(text, states);
+    const operations = text.match(regex.stateOperateExp);
+    //@ts-ignore - operations is not null, cause we are already checking for it (look up)
+    for (let rawOperation of operations) {
+        let operation = rawOperation.replace(/{{|}}/g, '');
+        operation = stateExtracter(operation, states);
+        let afterOperation;
+        try {
+            afterOperation = eval(operation);
+        }
+        catch (e) {
+            console.error(`[err] Invalid State Operation:\n\n${rawOperation}\n\n${e}`);
+        }
+        if (typeof afterOperation == 'undefined')
+            return text;
+        text = text.replace(rawOperation, afterOperation);
+    }
+    return stateExtracter(text, states);
+}
+function stateExtracter(text, states) {
+    const stateNames = text.match(regex.stateExp);
+    if (stateNames) {
+        for (let stateRaw of stateNames) {
+            const state = stateRaw.replace(/\$/g, '');
+            if (typeof states.states[state] == null)
+                continue;
+            let stateVal = states.get(state);
+            if (typeof stateVal == 'object')
+                stateVal = JSON.stringify(stateVal);
+            text = text.replace(stateRaw, `${stateVal}`);
+        }
+    }
+    return text;
+}
+function checkForOperation(text) {
+    return regex.stateOperateExp.test(text);
+}

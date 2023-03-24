@@ -35,11 +35,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Command = exports.Bot = void 0;
 const discord_js_1 = __importStar(require("discord.js"));
 const fs_1 = __importDefault(require("fs"));
-const command_1 = require("./helpers/command");
-Object.defineProperty(exports, "Command", { enumerable: true, get: function () { return command_1.Command; } });
 const handlers_1 = require("./helpers/handlers");
 class Bot {
     constructor(options) {
@@ -82,4 +79,4 @@ class Bot {
         }));
     }
 }
-exports.Bot = Bot;
+exports.default = Bot;

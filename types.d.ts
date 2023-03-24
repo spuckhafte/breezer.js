@@ -1,3 +1,6 @@
+import { MessagePayload, ReplyMessageOptions } from "discord.js";
+import { states } from "./src/helpers/command";
+
 export type Usage = ('message'|'server')[]
 export type CmdStructure = 'string'|'number'|'string|null'|'number|null';
 
@@ -20,4 +23,13 @@ export type CommandSettings = {
 
     /**name of the command*/
     name:string
+
+    /**state instance */
+    states?:states;
 }
+
+export type States = {
+    [index: string]: any
+}
+
+export type Payload = string | MessagePayload | ReplyMessageOptions;
