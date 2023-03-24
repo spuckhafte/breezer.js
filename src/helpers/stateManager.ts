@@ -25,4 +25,8 @@ export class StateManager {
         this.states[stateName] = val;
         this.event.emit("stateChange");
     }
+
+    clone() {
+        return new StateManager(structuredClone(this.states));
+    }
 }

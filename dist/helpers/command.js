@@ -19,10 +19,12 @@ const regex = {
 class Command {
     constructor(settings) {
         this.content = '';
+        this.till = 15;
         this.structure = settings.structure;
         this.name = settings.name;
         this.strict = !!settings.strict;
         this.states = settings.states;
+        this.till = settings.till;
         if (settings.structure.length > 0) {
             let error = (0, funcs_1.err)("'nully' bit should be at last and present iff the structure size is more than 1", this.name);
             const nullCount = this.structure.filter(i => i.includes('null')).length;
@@ -35,23 +37,31 @@ class Command {
         const stateChangeHandler = () => __awaiter(this, void 0, void 0, function* () {
             if (!this.msg || !this.states || !this.msgPayload)
                 return;
+            if (typeof this.till === 'number' || typeof this.till === 'undefined') {
+                if (typeof this.till === 'undefined')
+                    this.till = 15;
+                if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
+                    if (this.strict) {
+                        let e = (0, funcs_1.err)(`[warn] a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        console.log(e);
+                    }
+                    this.states.event.removeListener('stateChange', stateChangeHandler);
+                    return;
+                }
+            }
             let oldPayLoadString = JSON.stringify(this.msgPayload);
             let newPayloadString = formatString(oldPayLoadString, this.states);
             if (oldPayLoadString == newPayloadString)
                 return;
             let newPayload = typeof this.msgPayload == 'string'
                 ? newPayloadString : JSON.parse(newPayloadString);
-            // @ts-ignore
-            if (newPayload.allowedMentions != undefined) {
-                // @ts-ignore
-                delete newPayload.allowedMentions;
-            }
             try {
                 yield this.msg.edit(newPayload);
             }
             catch (e) {
                 if (this.strict) {
-                    console.warn(`[warn] a msg for ${this.name} cmd got deleted, but a state is still being updated for it`);
+                    let er = (0, funcs_1.err)("a msg for this cmd got deleted, but a state is still being updated for it", this.name, true);
+                    console.log(er);
                 }
                 this.states.event.removeListener('stateChange', stateChangeHandler);
             }

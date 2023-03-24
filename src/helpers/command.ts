@@ -12,18 +12,20 @@ const regex = {
 
 export class Command {
     structure:CmdStructure[];
-    name:string;
+    name?:string;
     strict:boolean;
     content:string='';
     msg?:Message;
     states?:StateManager;
-    msgPayload?:Payload
+    msgPayload?:Payload;
+    till?:'forever'|number = 15;
 
     constructor(settings: CommandSettings) {
         this.structure = settings.structure;
         this.name = settings.name;
         this.strict = !!settings.strict;
         this.states = settings.states;
+        this.till = settings.till;
 
         if (settings.structure.length > 0) {
             let error = err("'nully' bit should be at last and present iff the structure size is more than 1", this.name)
@@ -39,6 +41,19 @@ export class Command {
         const stateChangeHandler = async () => {
             if (!this.msg || !this.states || !this.msgPayload) return;
 
+            if (typeof this.till === 'number' || typeof this.till === 'undefined') {
+                if (typeof this.till === 'undefined') 
+                    this.till = 15;
+                if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
+                    if (this.strict) {
+                        let e = err(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        console.log(e);
+                    }
+                    this.states.event.removeListener('stateChange', stateChangeHandler);
+                    return;
+                }
+            }
+
             let oldPayLoadString = JSON.stringify(this.msgPayload);
             let newPayloadString = formatString(oldPayLoadString, this.states);
 
@@ -47,17 +62,12 @@ export class Command {
             let newPayload = typeof this.msgPayload == 'string' 
                             ? newPayloadString : JSON.parse(newPayloadString);
 
-            // @ts-ignore
-            if (newPayload.allowedMentions != undefined) {
-                // @ts-ignore
-                delete newPayload.allowedMentions;
-            }
-
             try {
                 await this.msg.edit(newPayload);
             } catch (e) {
                 if (this.strict) {
-                    console.warn(`[warn] a msg for ${this.name} cmd got deleted, but a state is still being updated for it`)
+                    let er = err("a msg for this cmd got deleted, it was listening for state(s)", this.name, true);
+                    console.log(er);
                 }
                 this.states.event.removeListener('stateChange', stateChangeHandler);
             }
@@ -165,6 +175,7 @@ export class TypicalCommand extends Command {
 
 function formatString(text:string, states:StateManager) {
     if (!checkForOperation(text)) return stateExtracter(text, states);
+    
 
     const operations = text.match(regex.stateOperateExp);
     //@ts-ignore - operations is not null, cause we are already checking for it (look up)

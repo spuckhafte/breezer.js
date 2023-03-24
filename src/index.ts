@@ -7,7 +7,7 @@ class Bot {
     commands:string[]; 
     bot:discord.Client;
     prefix:string;
-    private commandObjects:TypicalCommand[];
+    private commandObjects:{ [index: string]: TypicalCommand };
     private token:string;
     private cmdFolder:string;
 
@@ -28,10 +28,10 @@ class Bot {
 
         this.bot = new discord.Client({ intents });
 
-        let cmdsCollectd:TypicalCommand[] = [];
+        let cmdsCollectd:{ [index: string]: TypicalCommand } = {};
         for (let command of this.commands) {
             let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}.ts`);
-            cmdsCollectd.push(new cmd.default());
+            if (cmd.default) cmdsCollectd[command] = cmd.default;
         }
         this.commandObjects = cmdsCollectd;
     }
@@ -45,10 +45,10 @@ class Bot {
         this.bot.on('messageCreate', async msg => {
             const cmdName = revealNameOfCmd(msg.content, this.prefix);
             if (!cmdName || !this.commands.includes(cmdName)) return;
-            let cmd = this.commandObjects.find(c => c.name == cmdName);
-            if (!cmd) return;
+            let cmdClass = this.commandObjects[cmdName] as any;
+            const cmd = new cmdClass() as TypicalCommand
             cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
-            await cmd.execute(msg);
+            cmd.execute(msg);
         });
     }
 }

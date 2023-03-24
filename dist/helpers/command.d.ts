@@ -3,12 +3,13 @@ import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { StateManager } from "./stateManager";
 export declare class Command {
     structure: CmdStructure[];
-    name: string;
+    name?: string;
     strict: boolean;
     content: string;
     msg?: Message;
     states?: StateManager;
     msgPayload?: Payload;
+    till?: 'forever' | number;
     constructor(settings: CommandSettings);
     /**Extract fields from a command as per their defined structure */
     extract(): (string | number)[];

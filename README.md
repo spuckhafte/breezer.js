@@ -1,4 +1,197 @@
 # BREEZE JS
-An elegant framework for discord.js
+An elegant framework for discord.js :)
 
-*under development...*
+***Still under development (v0), only `msgCreate` is supported for now...***
+
+### Features:
+ - Typescript support
+ - Simple and intuitive
+ - State management<br>
+    *more coming soon*
+
+## Getting Started
+
+### Installation
+```
+npm i breezer.js
+npm i discord.js@v13
+```
+### Project setup
+```
+MyBot:
+ --index.js
+ --commands:
+    --ping.js
+    --calc.js
+    --mul.js
+```
+### A Basic Example
+**`index.js` :**
+```js
+import Bot from 'breezer.js'
+
+const bot = new Bot({
+    token: "<BOT_TOKEN>",
+    prefix: "+",
+    commandsFolder: "commands"
+});
+
+bot.login(() => {
+    console.log('Logged In')
+}).then(() => {
+    bot.start()
+});
+```
+It is as easy as its looks.<br>
+`commandsFolder` folder is where all your commands will be stored.<br>
+Everything else looks quite easy to follow up.<br>
+Just login and "then" start you bot.<br>
+
+**`commands/ping.js` :**
+```js
+import { Command } from 'breezer.js/helpers/command.js'
+
+export default class extends Command {
+    constructor() {
+        super({
+            structure: [],
+            name: 'ping', // same as the file name
+            strict: true // optional (def:false)
+        });
+    }
+
+    async execute(msg) {
+        msg.reply({
+            content: 'Pong!',
+            allowedMentions: {
+                repliedUser: false
+            }
+        });
+    }
+}
+```
+Every command is a class, child of the `Command` class.<br>
+`structure` - defines a structure for your command.
+Helpful when extracting the fields of you commands.<br>
+This property will be better understood in the next command. Here there are no fields for this cmd => no structure.<br>
+`strict` - set it to true if you want to recieve errors/warnings when:
+ - user does not follow the defined structure of the cmd
+ - a deleted msg listens for certain state(s)
+ - an expired msg listens for state(s).
+  
+This feature should only be turned on during development.
+
+`name` - optional: will help in debugging in strict mode<br>
+`execute` - this method accepts the actual msg as a parameter and your logics for the command will be defined here.
+
+**`commands/calc.js`:**
+```js
+import { Command } from 'breezer.js/helpers/command.js'
+
+export default class extends Command {
+    constructor() {
+        super({
+            structure: ['string'],
+            name: 'calc'
+        });
+    }
+
+    async execute(msg) {
+        const [operation] = this.extract();
+        let value;
+        try {
+            value = eval(operation);
+        } catch (_) {
+            value = 'Invalid Operation'
+        }
+
+        msg.channel.send(value.toString());
+    }
+}
+```
+Here structure has `string` as its first and only option. Now the user can easily extract the first option using `this.extract`.<br>
+
+*Context:* This string will be an expression `1*3`<br>
+*Warning:* Never use `eval` like this, who knows what the operation is.
+
+`Structure` can have these values:<br>
+```js
+"string", "string|null", "number", "number|null"
+```
+The nullable properties keep you safe in strict mode and while extracting.
+
+Example of a structure:
+```js
+["string", "number", "number", "string|null"]
+```
+Here a command will accept 4 options.<br>
+If a user does not follow this structure in strict mode, it'll raise an error and you bot will stop.<Br>
+You can also easily extract these options:
+```js
+// inside execute()
+const [opt1, opt2, opt3, opt4] = this.extract();
+```
+**NOTE**: There can be only one nullable option, that too at the end.
+
+**`commands/count.js`:**
+```js
+import { Command } from 'breezer.js/helpers/command';
+import { StateManager } from "breezer.js/helpers/stateManager";
+
+const state = new StateManager({
+    count: 1
+});
+export default class extends Command {
+    constructor() {
+        super({
+            name: 'mul',
+            structure: ["number"],
+            states: state.clone(),
+            strict: true,
+            till: 1
+        });
+    }
+    async execute(msg:Message) {
+        const [by] = this.extract();
+
+        await this.send(msg, {
+            embeds: [
+                new MessageEmbed({
+                    title: `${by} x $count$ = {{ ${by} * $count$ }}`
+                })
+            ]
+        });
+        
+        setInterval(() => {
+            this.states.set('count', p => p + 1);
+        }, 1000);
+    }
+}
+```
+States are special values that when referred in message payload in a special way as string, update their reference in the original message as their value change.
+
+We mention them inside strings using the `$` reference, like this:<br>
+`$statename$`.
+
+We can also do operations on states, only when they lie inside `{{ ... }}`
+```js
+// js methods
+{
+  content: "Answer is: {{ ['first', 'third'].includes('$answer$') }}"
+}
+// ternary operations
+{
+  content: "Count is: {{ $count$ > 5 : 'Big' :'Small' }}"
+}
+// arithmetic operations
+{
+  content: "Answer = {{ $num1$ + (($num2$ - 3) * 5)/10 }}"
+  // yes, you can have 2 state in an operation!
+}
+```
+Inside the constructor:<br>
+`states`: this will be the instance of class `StateManager`. You can clone it to it independent or you can just refer the original object.<br>
+`till`: msg listen to its state(s) for a certain time, define that time in minutes in this property. (default: 15min).<br>
+Or set it to `forever`, it will always listen for the state(s).
+
+This is what that example cmd (mul) looks in action:

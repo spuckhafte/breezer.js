@@ -53,10 +53,11 @@ class Bot {
         this.cmdFolder = options.commandsFolder;
         this.prefix = options.prefix;
         this.bot = new discord_js_1.default.Client({ intents });
-        let cmdsCollectd = [];
+        let cmdsCollectd = {};
         for (let command of this.commands) {
             let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}.ts`);
-            cmdsCollectd.push(new cmd.default());
+            if (cmd.default)
+                cmdsCollectd[command] = cmd.default;
         }
         this.commandObjects = cmdsCollectd;
     }
@@ -71,11 +72,10 @@ class Bot {
             const cmdName = (0, handlers_1.revealNameOfCmd)(msg.content, this.prefix);
             if (!cmdName || !this.commands.includes(cmdName))
                 return;
-            let cmd = this.commandObjects.find(c => c.name == cmdName);
-            if (!cmd)
-                return;
+            let cmdClass = this.commandObjects[cmdName];
+            const cmd = new cmdClass();
             cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
-            yield cmd.execute(msg);
+            cmd.execute(msg);
         }));
     }
 }

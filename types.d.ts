@@ -1,5 +1,5 @@
 import { MessagePayload, ReplyMessageOptions } from "discord.js";
-import { states } from "./src/helpers/command";
+import { StateManager } from "./src/helpers/stateManager";
 
 export type Usage = ('message'|'server')[]
 export type CmdStructure = 'string'|'number'|'string|null'|'number|null';
@@ -21,11 +21,14 @@ export type CommandSettings = {
     */
     strict?:boolean,
 
-    /**name of the command*/
-    name:string
+    /**name of the command, optional: only for debugging*/
+    name?:string
 
     /**state instance */
-    states?:states;
+    states?:StateManager;
+
+    /**minutes for which a msg will listen to states, default: 15 mins */
+    till?:'forever'|number;
 }
 
 export type States = {
