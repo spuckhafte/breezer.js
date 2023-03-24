@@ -195,3 +195,5 @@ Inside the constructor:<br>
 Or set it to `forever`, it will always listen for the state(s).
 
 This is what that example cmd (mul) looks in action:
+ 
+![state](https://user-images.githubusercontent.com/70335252/227464358-9358f0a9-8f57-4bec-b7a4-89a2337c1052.gif)
