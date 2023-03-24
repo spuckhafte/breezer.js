@@ -42,7 +42,7 @@ class Command {
                     this.till = 15;
                 if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
                     if (this.strict) {
-                        let e = (0, funcs_1.err)(`[warn] a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        let e = (0, funcs_1.err)(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
                         console.log(e);
                     }
                     this.states.event.removeListener('stateChange', stateChangeHandler);
@@ -60,7 +60,7 @@ class Command {
             }
             catch (e) {
                 if (this.strict) {
-                    let er = (0, funcs_1.err)("a msg for this cmd got deleted, but a state is still being updated for it", this.name, true);
+                    let er = (0, funcs_1.err)("a msg for this cmd got deleted, it was listening for state(s)", this.name, true);
                     console.log(er);
                 }
                 this.states.event.removeListener('stateChange', stateChangeHandler);
