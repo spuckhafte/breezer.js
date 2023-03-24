@@ -49,7 +49,7 @@ Just login and "then" start you bot.<br>
 
 **`commands/ping.js` :**
 ```js
-import { Command } from 'breezer.js/helpers/command.js'
+import { Command } from 'breezer.js/dist/helpers/command.js'
 
 export default class extends Command {
     constructor() {
@@ -86,7 +86,7 @@ This feature should only be turned on during development.
 
 **`commands/calc.js`:**
 ```js
-import { Command } from 'breezer.js/helpers/command.js'
+import { Command } from 'breezer.js/dist/helpers/command.js'
 
 export default class extends Command {
     constructor() {
@@ -135,8 +135,9 @@ const [opt1, opt2, opt3, opt4] = this.extract();
 
 **`commands/count.js`:**
 ```js
-import { Command } from 'breezer.js/helpers/command';
-import { StateManager } from "breezer.js/helpers/stateManager";
+import { Command } from 'breezer.js/dist/helpers/command';
+import { StateManager } from "breezer.js/dist/helpers/stateManager";
+import { MessageEmbed } from 'discord.js';
 
 const state = new StateManager({
     count: 1
@@ -151,7 +152,7 @@ export default class extends Command {
             till: 1
         });
     }
-    async execute(msg:Message) {
+    async execute(msg) {
         const [by] = this.extract();
 
         await this.send(msg, {
