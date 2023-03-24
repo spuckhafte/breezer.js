@@ -1,4 +1,3 @@
-"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -8,15 +7,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.TypicalCommand = exports.Command = void 0;
-const funcs_1 = require("./funcs");
-const handlers_1 = require("./handlers");
+import { err } from "./funcs";
+import { extractFieldValuesHandler } from "./handlers";
 const regex = {
     stateOperateExp: /{{[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+}}/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 };
-class Command {
+export class Command {
     constructor(settings) {
         this.content = '';
         this.till = 15;
@@ -26,7 +23,7 @@ class Command {
         this.states = settings.states;
         this.till = settings.till;
         if (settings.structure.length > 0) {
-            let error = (0, funcs_1.err)("'nully' bit should be at last and present iff the structure size is more than 1", this.name);
+            let error = err("'nully' bit should be at last and present iff the structure size is more than 1", this.name);
             const nullCount = this.structure.filter(i => i.includes('null')).length;
             if ((nullCount == 1 && settings.structure.length == 1) ||
                 (nullCount > 1 && this.structure.length > 1))
@@ -42,7 +39,7 @@ class Command {
                     this.till = 15;
                 if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
                     if (this.strict) {
-                        let e = (0, funcs_1.err)(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        let e = err(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
                         console.log(e);
                     }
                     this.states.event.removeListener('stateChange', stateChangeHandler);
@@ -60,7 +57,7 @@ class Command {
             }
             catch (e) {
                 if (this.strict) {
-                    let er = (0, funcs_1.err)("a msg for this cmd got deleted, it was listening for state(s)", this.name, true);
+                    let er = err("a msg for this cmd got deleted, it was listening for state(s)", this.name, true);
                     console.log(er);
                 }
                 this.states.event.removeListener('stateChange', stateChangeHandler);
@@ -74,14 +71,14 @@ class Command {
         fields.shift();
         if (this.strict) {
             if (this.structure.length == 0)
-                throw Error((0, funcs_1.err)("extracting from a field-less command.", this.name));
+                throw Error(err("extracting from a field-less command.", this.name));
             if (this.structure.length !== fields.length) {
                 if (this.structure[this.structure.length - 1].includes('null')) {
                     if ((this.structure.length - 1) !== fields.length)
-                        throw Error((0, funcs_1.err)("the fields does not match with structure.", this.name));
+                        throw Error(err("the fields does not match with structure.", this.name));
                 }
                 else
-                    throw Error((0, funcs_1.err)("the fields does not match with structure.", this.name));
+                    throw Error(err("the fields does not match with structure.", this.name));
             }
         }
         if (this.structure.length != 0 && this.structure[this.structure.length - 1].includes('null')) {
@@ -100,7 +97,7 @@ class Command {
                         return extracted;
                     }
                 }
-                let data = handlers_1.extractFieldValuesHandler[this.structure[field].split('|')[0]](fields[field], this.strict, this.name);
+                let data = extractFieldValuesHandler[this.structure[field].split('|')[0]](fields[field], this.strict, this.name);
                 extracted.push(data);
             }
             catch (e) {
@@ -152,8 +149,7 @@ class Command {
         });
     }
 }
-exports.Command = Command;
-class TypicalCommand extends Command {
+export class TypicalCommand extends Command {
     constructor() {
         super({
             structure: [],
@@ -165,7 +161,6 @@ class TypicalCommand extends Command {
         });
     }
 }
-exports.TypicalCommand = TypicalCommand;
 function formatString(text, states) {
     if (!checkForOperation(text))
         return stateExtracter(text, states);

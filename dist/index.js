@@ -1,27 +1,3 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -31,31 +7,28 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const discord_js_1 = __importStar(require("discord.js"));
-const fs_1 = __importDefault(require("fs"));
-const handlers_1 = require("./helpers/handlers");
+import discord, { Intents } from 'discord.js';
+import fs from 'fs';
+import { revealNameOfCmd } from './helpers/handlers';
 class Bot {
     constructor(options) {
         let intents = [
-            discord_js_1.Intents.FLAGS.GUILD_MESSAGES,
-            discord_js_1.Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            discord_js_1.Intents.FLAGS.MESSAGE_CONTENT,
-            discord_js_1.Intents.FLAGS.GUILDS,
-            discord_js_1.Intents.FLAGS.GUILD_MEMBERS,
-            discord_js_1.Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
+            Intents.FLAGS.GUILD_MESSAGES,
+            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+            Intents.FLAGS.MESSAGE_CONTENT,
+            Intents.FLAGS.GUILDS,
+            Intents.FLAGS.GUILD_MEMBERS,
+            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
         ];
-        this.commands = fs_1.default.readdirSync(options.commandsFolder).map(i => i.replace('.ts', ''));
+        this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(this.lang, ''));
         this.token = options.token;
         this.cmdFolder = options.commandsFolder;
         this.prefix = options.prefix;
-        this.bot = new discord_js_1.default.Client({ intents });
+        this.lang = options.lang;
+        this.bot = new discord.Client({ intents });
         let cmdsCollectd = {};
         for (let command of this.commands) {
-            let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}.ts`);
+            let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`);
             if (cmd.default)
                 cmdsCollectd[command] = cmd.default;
         }
@@ -64,12 +37,13 @@ class Bot {
     login(cb) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.bot.login(this.token);
-            cb();
+            if (cb)
+                cb();
         });
     }
     start() {
         this.bot.on('messageCreate', (msg) => __awaiter(this, void 0, void 0, function* () {
-            const cmdName = (0, handlers_1.revealNameOfCmd)(msg.content, this.prefix);
+            const cmdName = revealNameOfCmd(msg.content, this.prefix);
             if (!cmdName || !this.commands.includes(cmdName))
                 return;
             let cmdClass = this.commandObjects[cmdName];
@@ -79,4 +53,4 @@ class Bot {
         }));
     }
 }
-exports.default = Bot;
+export default Bot;

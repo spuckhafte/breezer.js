@@ -6,12 +6,14 @@ declare class Bot {
     private commandObjects;
     private token;
     private cmdFolder;
+    private lang;
     constructor(options: {
         commandsFolder: string;
         token: string;
         prefix: string;
+        lang: '.js' | '.ts';
     });
-    login(cb: CallableFunction): Promise<void>;
+    login(cb?: CallableFunction): Promise<void>;
     start(): void;
 }
 export default Bot;

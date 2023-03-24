@@ -10,8 +10,9 @@ class Bot {
     private commandObjects:{ [index: string]: TypicalCommand };
     private token:string;
     private cmdFolder:string;
+    private lang:string
 
-    constructor(options:{ commandsFolder:string, token:string, prefix:string }) {
+    constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts' }) {
         let intents = [
             Intents.FLAGS.GUILD_MESSAGES,
             Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
@@ -21,24 +22,25 @@ class Bot {
             Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
         ]
 
-        this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace('.ts', ''));
+        this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(this.lang, ''));
         this.token = options.token;
         this.cmdFolder = options.commandsFolder;
         this.prefix = options.prefix;
+        this.lang = options.lang;
 
         this.bot = new discord.Client({ intents });
 
         let cmdsCollectd:{ [index: string]: TypicalCommand } = {};
         for (let command of this.commands) {
-            let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}.ts`);
+            let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`);
             if (cmd.default) cmdsCollectd[command] = cmd.default;
         }
         this.commandObjects = cmdsCollectd;
     }
 
-    async login(cb:CallableFunction) {
+    async login(cb?:CallableFunction) {
         await this.bot.login(this.token);
-        cb();
+        if (cb) cb();
     }
 
     start() {

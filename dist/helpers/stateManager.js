@@ -1,18 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.StateManager = void 0;
-const events_1 = __importDefault(require("events"));
-class StateManager {
+import Events from 'events';
+export class StateManager {
     /**Manage states, globally or for specific commands
      *
      * `{ stateName: stateValue (type: any) }`
      */
     constructor(states) {
         this.states = states;
-        const event = new events_1.default();
+        const event = new Events();
         this.event = event;
     }
     get(stateName) {
@@ -27,4 +21,3 @@ class StateManager {
         return new StateManager(structuredClone(this.states));
     }
 }
-exports.StateManager = StateManager;
