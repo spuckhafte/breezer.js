@@ -1,4 +1,4 @@
-# BREEZE JS
+# BREEZER JS
 An elegant framework for discord.js :)
 
 ***Still under development (v0), only `msgCreate` is supported for now...***
