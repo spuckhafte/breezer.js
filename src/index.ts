@@ -22,7 +22,7 @@ class Bot {
             Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
         ]
 
-        this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(this.lang, ''));
+        this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;
         this.cmdFolder = options.commandsFolder;
         this.prefix = options.prefix;
@@ -32,8 +32,10 @@ class Bot {
 
         let cmdsCollectd:{ [index: string]: TypicalCommand } = {};
         for (let command of this.commands) {
-            let cmd = require(`${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`);
-            if (cmd.default) cmdsCollectd[command] = cmd.default;
+            import(`file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`).then(cmd => {
+                if (cmd.default)
+                    cmdsCollectd[command] = cmd.default;
+            });
         }
         this.commandObjects = cmdsCollectd;
     }
