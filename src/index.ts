@@ -35,7 +35,7 @@ class Bot {
             import(`file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`).then(cmd => {
                 if (cmd.default)
                     cmdsCollectd[command] = cmd.default;
-            });
+            }).catch(e => console.log(e));
         }
         this.commandObjects = cmdsCollectd;
     }
