@@ -28,7 +28,7 @@ MyBot:
 ### A Basic Example
 **`index.js` :**
 ```js
-import Bot from 'breezer.js'
+import { Bot } from 'breezer.js'
 
 const bot = new Bot({
     token: "<BOT_TOKEN>",
@@ -49,7 +49,7 @@ Just login and "then" start you bot.<br>
 
 **`commands/ping.js` :**
 ```js
-import { Command } from 'breezer.js/dist/helpers/command.js'
+import { Command } from 'breezer.js/dist'
 
 export default class extends Command {
     constructor() {
@@ -86,7 +86,7 @@ This feature should only be turned on during development.
 
 **`commands/calc.js`:**
 ```js
-import { Command } from 'breezer.js/dist/helpers/command.js'
+import { Command } from 'breezer.js'
 
 export default class extends Command {
     constructor() {
@@ -133,10 +133,9 @@ const [opt1, opt2, opt3, opt4] = this.extract();
 ```
 **NOTE**: There can be only one nullable option, that too at the end.
 
-**`commands/count.js`:**
+**`commands/mul.js`:**
 ```js
-import { Command } from 'breezer.js/dist/helpers/command';
-import { StateManager } from "breezer.js/dist/helpers/stateManager";
+import { Command, StateManager } from 'breezer.js';
 import { MessageEmbed } from 'discord.js';
 
 const state = new StateManager({

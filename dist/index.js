@@ -10,6 +10,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import discord, { Intents } from 'discord.js';
 import fs from 'fs';
 import { revealNameOfCmd } from './helpers/handlers.js';
+import { Command } from './helpers/command.js';
+import { StateManager } from './helpers/stateManager.js';
 class Bot {
     constructor(options) {
         let intents = [
@@ -54,4 +56,4 @@ class Bot {
         }));
     }
 }
-export default Bot;
+export { Bot, Command, StateManager };

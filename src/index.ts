@@ -2,6 +2,8 @@ import discord, { Intents } from 'discord.js';
 import fs from 'fs';
 import { TypicalCommand } from './helpers/command.js';
 import { revealNameOfCmd } from './helpers/handlers.js';
+import { Command } from './helpers/command.js';
+import { StateManager } from './helpers/stateManager.js';
 
 class Bot {
     commands:string[]; 
@@ -57,4 +59,4 @@ class Bot {
     }
 }
 
-export default Bot;
+export { Bot, Command, StateManager };
