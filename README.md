@@ -36,16 +36,12 @@ const bot = new Bot({
     commandsFolder: "commands"
 });
 
-bot.login(() => {
-    console.log('Logged In')
-}).then(() => {
-    bot.start()
-});
+bot.go(() => console.log('Logged In'));
 ```
 It is as easy as its looks.<br>
 `commandsFolder` folder is where all your commands will be stored.<br>
 Everything else looks quite easy to follow up.<br>
-Just login and "then" start you bot.<br>
+Fill up some details and you're ready to *go()* !<br>
 
 **`commands/ping.js` :**
 ```js
@@ -197,3 +193,48 @@ Or set it to `forever`, it will always listen for the state(s).
 This is what that example cmd (mul) looks in action:
  
 ![state](https://user-images.githubusercontent.com/70335252/227464358-9358f0a9-8f57-4bec-b7a4-89a2337c1052.gif)
+
+
+## HANDLERS
+These are some extra functions available in the library to make stuff easier.
+
+### buttonSignal()
+This handler is a syntactic-sugar for `createMessageComponentCollector`.<br>
+This can be used in situations when one wants to collect button interactions when some specific users click the button.
+
+```js
+import { buttonSignal } from 'breezer.js'
+
+const sentMsg = msg.reply({
+    components: [row]
+});
+
+buttonSignal(
+    ['userid1', 'userid2'], // users
+    sentMsg, // msg
+    { max: 3, time: 2000 } // props (opt)
+
+).on('collect', async btn => {
+    await btn.deferUpdate();
+    ...
+}).on('end', async collection => {
+    ...
+});
+
+/** 
+ This signal will listen for 
+    * max 3 clicks, for
+    * 2 seconds, from
+    * user with id 1 and 2 only, on
+    * every button in the "row"
+ */
+```
+So buttonSignal accepts 3 arguments
+ - **users**: array containing the user id who can click the button
+ - **msg**: the message that contains the buttons
+ - **props**: an optional parameter specifying these 3 properties-
+    - **customId**: the only button from the row that you'll listen to (its id)
+    - **max**: maximum valid clicks
+    - **time**: the time interval (in ms) for which the button will be valid and clicks will matter
+
+This function returns the normal discord's interaction listener listening for `collect` and `end`. 

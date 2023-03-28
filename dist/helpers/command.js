@@ -114,6 +114,7 @@ export class Command {
     execute(msg) {
         return __awaiter(this, void 0, void 0, function* () { });
     }
+    /**Send using this if there are states to manage */
     reply(msg, payload) {
         return __awaiter(this, void 0, void 0, function* () {
             this.msgPayload = payload;
@@ -129,8 +130,10 @@ export class Command {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
             this.msg = yield msg.reply(data);
+            return this.msg;
         });
     }
+    /**Reply using this if there are states to manage */
     send(msg, payload) {
         return __awaiter(this, void 0, void 0, function* () {
             this.msgPayload = payload;
@@ -146,6 +149,7 @@ export class Command {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
             this.msg = yield msg.channel.send(data);
+            return this.msg;
         });
     }
 }

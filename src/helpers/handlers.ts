@@ -1,5 +1,3 @@
-import { Intents } from 'discord.js'
-import { TypicalCommand } from './command.js';
 import { err } from './funcs.js'
 
 export const extractFieldValuesHandler = {

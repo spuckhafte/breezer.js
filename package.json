@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "tsc && ts-node ./example/index.ts",
+    "test": "tsc && node ./example/index.js",
     "build": "tsc"
   },
   "keywords": [],

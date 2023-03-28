@@ -127,6 +127,7 @@ export class Command {
     /**Add your logics for the command inside this function */
     async execute(msg:Message) {}
 
+    /**Send using this if there are states to manage */
     async reply (msg:Message, payload:Payload) {
         this.msgPayload = payload;
         if (!this.states) {
@@ -140,8 +141,10 @@ export class Command {
             data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
         }
         this.msg = await msg.reply(data);
+        return this.msg;
     }
 
+    /**Reply using this if there are states to manage */
     async send (msg:Message, payload:Payload) {
         this.msgPayload = payload;
         if (!this.states) {
@@ -157,6 +160,7 @@ export class Command {
         }
 
         this.msg = await msg.channel.send(data);
+        return this.msg;
     }
 }
 

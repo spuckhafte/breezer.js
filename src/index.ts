@@ -4,6 +4,7 @@ import { TypicalCommand } from './helpers/command.js';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
+import { buttonSignal } from './helpers/funcs.js';
 
 class Bot {
     commands:string[]; 
@@ -42,12 +43,8 @@ class Bot {
         this.commandObjects = cmdsCollectd;
     }
 
-    async login(cb?:CallableFunction) {
+    async go(cb?:CallableFunction) {
         await this.bot.login(this.token);
-        if (cb) cb();
-    }
-
-    start() {
         this.bot.on('messageCreate', async msg => {
             const cmdName = revealNameOfCmd(msg.content, this.prefix);
             if (!cmdName || !this.commands.includes(cmdName)) return;
@@ -56,7 +53,8 @@ class Bot {
             cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
             cmd.execute(msg);
         });
+        if (cb) cb();
     }
 }
 
-export { Bot, Command, StateManager };
+export { Bot, Command, StateManager, buttonSignal };

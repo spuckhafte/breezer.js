@@ -1,4 +1,3 @@
-import { Message } from 'discord.js';
 import Events from 'events';
 import { States } from '../../types';
 

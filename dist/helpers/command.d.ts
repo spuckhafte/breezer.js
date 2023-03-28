@@ -15,8 +15,10 @@ export declare class Command {
     extract(): (string | number)[];
     /**Add your logics for the command inside this function */
     execute(msg: Message): Promise<void>;
-    reply(msg: Message, payload: Payload): Promise<void>;
-    send(msg: Message, payload: Payload): Promise<void>;
+    /**Send using this if there are states to manage */
+    reply(msg: Message, payload: Payload): Promise<Message<boolean> | undefined>;
+    /**Reply using this if there are states to manage */
+    send(msg: Message, payload: Payload): Promise<Message<boolean> | undefined>;
 }
 export declare class TypicalCommand extends Command {
     constructor();

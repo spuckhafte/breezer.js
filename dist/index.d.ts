@@ -1,6 +1,7 @@
 import discord from 'discord.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
+import { buttonSignal } from './helpers/funcs.js';
 declare class Bot {
     commands: string[];
     bot: discord.Client;
@@ -15,7 +16,6 @@ declare class Bot {
         prefix: string;
         lang: '.js' | '.ts';
     });
-    login(cb?: CallableFunction): Promise<void>;
-    start(): void;
+    go(cb?: CallableFunction): Promise<void>;
 }
-export { Bot, Command, StateManager };
+export { Bot, Command, StateManager, buttonSignal };

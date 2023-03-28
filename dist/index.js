@@ -12,6 +12,7 @@ import fs from 'fs';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
+import { buttonSignal } from './helpers/funcs.js';
 class Bot {
     constructor(options) {
         let intents = [
@@ -37,23 +38,21 @@ class Bot {
         }
         this.commandObjects = cmdsCollectd;
     }
-    login(cb) {
+    go(cb) {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.bot.login(this.token);
+            this.bot.on('messageCreate', (msg) => __awaiter(this, void 0, void 0, function* () {
+                const cmdName = revealNameOfCmd(msg.content, this.prefix);
+                if (!cmdName || !this.commands.includes(cmdName))
+                    return;
+                let cmdClass = this.commandObjects[cmdName];
+                const cmd = new cmdClass();
+                cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
+                cmd.execute(msg);
+            }));
             if (cb)
                 cb();
         });
     }
-    start() {
-        this.bot.on('messageCreate', (msg) => __awaiter(this, void 0, void 0, function* () {
-            const cmdName = revealNameOfCmd(msg.content, this.prefix);
-            if (!cmdName || !this.commands.includes(cmdName))
-                return;
-            let cmdClass = this.commandObjects[cmdName];
-            const cmd = new cmdClass();
-            cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
-            cmd.execute(msg);
-        }));
-    }
 }
-export { Bot, Command, StateManager };
+export { Bot, Command, StateManager, buttonSignal };
