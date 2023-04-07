@@ -125,7 +125,7 @@ export class Command {
     }
 
     /**Add your logics for the command inside this function */
-    async execute(msg:Message) {}
+    async execute() {}
 
     /**Send using this if there are states to manage */
     async reply (msg:Message, payload:Payload) {
@@ -171,7 +171,7 @@ export class TypicalCommand extends Command {
             name: '_'
         });
     }
-    async execute(msg:Message) {
+    async execute() {
         
     }
 }

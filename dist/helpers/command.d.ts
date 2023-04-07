@@ -14,7 +14,7 @@ export declare class Command {
     /**Extract fields from a command as per their defined structure */
     extract(): (string | number)[];
     /**Add your logics for the command inside this function */
-    execute(msg: Message): Promise<void>;
+    execute(): Promise<void>;
     /**Send using this if there are states to manage */
     reply(msg: Message, payload: Payload): Promise<Message<boolean> | undefined>;
     /**Reply using this if there are states to manage */
@@ -22,5 +22,5 @@ export declare class Command {
 }
 export declare class TypicalCommand extends Command {
     constructor();
-    execute(msg: Message): Promise<void>;
+    execute(): Promise<void>;
 }

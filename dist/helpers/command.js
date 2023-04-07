@@ -111,7 +111,7 @@ export class Command {
         return extracted;
     }
     /**Add your logics for the command inside this function */
-    execute(msg) {
+    execute() {
         return __awaiter(this, void 0, void 0, function* () { });
     }
     /**Send using this if there are states to manage */
@@ -160,7 +160,7 @@ export class TypicalCommand extends Command {
             name: '_'
         });
     }
-    execute(msg) {
+    execute() {
         return __awaiter(this, void 0, void 0, function* () {
         });
     }

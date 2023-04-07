@@ -56,8 +56,8 @@ export default class extends Command {
         });
     }
 
-    async execute(msg) {
-        msg.reply({
+    async execute() {
+        this.msg.reply({
             content: 'Pong!',
             allowedMentions: {
                 repliedUser: false
@@ -78,7 +78,7 @@ This property will be better understood in the next command. Here there are no f
 This feature should only be turned on during development.
 
 `name` - optional: will help in debugging in strict mode<br>
-`execute` - this method accepts the actual msg as a parameter and your logics for the command will be defined here.
+`execute` - logics for your command will be defined here.
 
 **`commands/calc.js`:**
 ```js
@@ -92,7 +92,7 @@ export default class extends Command {
         });
     }
 
-    async execute(msg) {
+    async execute() {
         const [operation] = this.extract();
         let value;
         try {
@@ -101,7 +101,7 @@ export default class extends Command {
             value = 'Invalid Operation'
         }
 
-        msg.channel.send(value.toString());
+        this.msg.channel.send(value.toString());
     }
 }
 ```
@@ -147,10 +147,10 @@ export default class extends Command {
             till: 1
         });
     }
-    async execute(msg) {
+    async execute() {
         const [by] = this.extract();
 
-        await this.send(msg, {
+        await this.send(this.msg, {
             embeds: [
                 new MessageEmbed({
                     title: `${by} x $count$ = {{ ${by} * $count$ }}`
@@ -205,7 +205,8 @@ This can be used in situations when one wants to collect button interactions whe
 ```js
 import { buttonSignal } from 'breezer.js'
 
-const sentMsg = msg.reply({
+// inisde execute()
+const sentMsg = this.msg.reply({
     components: [row]
 });
 

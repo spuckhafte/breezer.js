@@ -51,7 +51,8 @@ class Bot {
             let cmdClass = this.commandObjects[cmdName] as any;
             const cmd = new cmdClass() as TypicalCommand
             cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
-            cmd.execute(msg);
+            cmd.msg = msg;
+            cmd.execute();
         });
         if (cb) cb();
     }
