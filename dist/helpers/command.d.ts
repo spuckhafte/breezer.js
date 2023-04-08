@@ -16,9 +16,9 @@ export declare class Command {
     /**Add your logics for the command inside this function */
     execute(): Promise<void>;
     /**Send using this if there are states to manage */
-    reply(msg: Message, payload: Payload): Promise<Message<boolean> | undefined>;
+    reply(payload: Payload): Promise<Message<boolean> | undefined>;
     /**Reply using this if there are states to manage */
-    send(msg: Message, payload: Payload): Promise<Message<boolean> | undefined>;
+    send(payload: Payload): Promise<Message<boolean> | undefined>;
 }
 export declare class TypicalCommand extends Command {
     constructor();

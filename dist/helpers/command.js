@@ -115,11 +115,12 @@ export class Command {
         return __awaiter(this, void 0, void 0, function* () { });
     }
     /**Send using this if there are states to manage */
-    reply(msg, payload) {
+    reply(payload) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             this.msgPayload = payload;
             if (!this.states) {
-                yield msg.reply(payload);
+                yield ((_a = this.msg) === null || _a === void 0 ? void 0 : _a.reply(payload));
                 return;
             }
             let data;
@@ -129,16 +130,16 @@ export class Command {
             else {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
-            this.msg = yield msg.reply(data);
-            return this.msg;
+            return yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.reply(data));
         });
     }
     /**Reply using this if there are states to manage */
-    send(msg, payload) {
+    send(payload) {
+        var _a, _b;
         return __awaiter(this, void 0, void 0, function* () {
             this.msgPayload = payload;
             if (!this.states) {
-                yield msg.reply(payload);
+                yield ((_a = this.msg) === null || _a === void 0 ? void 0 : _a.channel.send(payload));
                 return;
             }
             let data;
@@ -148,8 +149,7 @@ export class Command {
             else {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
-            this.msg = yield msg.channel.send(data);
-            return this.msg;
+            return yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.channel.send(data));
         });
     }
 }
