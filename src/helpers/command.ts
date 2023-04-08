@@ -34,7 +34,7 @@ export class Command {
             if (
                 (nullCount == 1 && settings.structure.length == 1) || 
                 (nullCount > 1 && this.structure.length > 1)
-            ) throw Error(error);
+            ) if (this.strict) throw Error(error);
         }
 
         if (!this.states) return;
