@@ -16,6 +16,7 @@ export class Command {
     strict:boolean;
     content:string='';
     msg?:Message;
+    sent?:Message;
     states?:StateManager;
     msgPayload?:Payload;
     till?:'forever'|number = 15;
@@ -39,14 +40,14 @@ export class Command {
         if (!this.states) return;
 
         const stateChangeHandler = async () => {
-            if (!this.msg || !this.states || !this.msgPayload) return;
+            if (!this.sent || !this.states || !this.msgPayload) return;
 
             if (typeof this.till === 'number' || typeof this.till === 'undefined') {
                 if (typeof this.till === 'undefined') 
                     this.till = 15;
-                if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
+                if (Date.now() - this.sent.createdTimestamp >= this.till * 60 * 1000) {
                     if (this.strict) {
-                        let e = err(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        let e = err(`a msg listening for states since ${this.sent.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
                         console.log(e);
                     }
                     this.states.event.removeListener('stateChange', stateChangeHandler);
@@ -63,7 +64,7 @@ export class Command {
                             ? newPayloadString : JSON.parse(newPayloadString);
 
             try {
-                await this.msg.edit(newPayload);
+                await this.sent.edit(newPayload);
             } catch (e) {
                 if (this.strict) {
                     let er = err("a msg for this cmd got deleted, it was listening for state(s)", this.name, true);
@@ -140,7 +141,8 @@ export class Command {
         } else {
             data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
         }
-        return await this.msg?.reply(data);
+        this.sent = await this.msg?.reply(data);
+        return this.sent;
     }
 
     /**Reply using this if there are states to manage */
@@ -158,7 +160,8 @@ export class Command {
             data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
         }
 
-        return await this.msg?.channel.send(data);
+        this.sent = await this.msg?.channel.send(data);
+        return this.sent;
     }
 }
 
