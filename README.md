@@ -150,7 +150,7 @@ export default class extends Command {
     async execute() {
         const [by] = this.extract();
 
-        await this.send(this.msg, {
+        await this.send({
             embeds: [
                 new MessageEmbed({
                     title: `${by} x $count$ = {{ ${by} * $count$ }}`

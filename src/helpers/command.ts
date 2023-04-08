@@ -128,10 +128,10 @@ export class Command {
     async execute() {}
 
     /**Send using this if there are states to manage */
-    async reply (msg:Message, payload:Payload) {
+    async reply (payload:Payload) {
         this.msgPayload = payload;
         if (!this.states) {
-            await msg.reply(payload);
+            await this.msg?.reply(payload);
             return;
         }
         let data;
@@ -140,15 +140,14 @@ export class Command {
         } else {
             data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
         }
-        this.msg = await msg.reply(data);
-        return this.msg;
+        return await this.msg?.reply(data);
     }
 
     /**Reply using this if there are states to manage */
-    async send (msg:Message, payload:Payload) {
+    async send (payload:Payload) {
         this.msgPayload = payload;
         if (!this.states) {
-            await msg.reply(payload);
+            await this.msg?.channel.send(payload);
             return;
         }
         let data;
@@ -159,8 +158,7 @@ export class Command {
             data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
         }
 
-        this.msg = await msg.channel.send(data);
-        return this.msg;
+        return await this.msg?.channel.send(data);
     }
 }
 
