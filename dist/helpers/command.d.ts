@@ -7,6 +7,7 @@ export declare class Command {
     strict: boolean;
     content: string;
     msg?: Message;
+    sent?: Message;
     states?: StateManager;
     msgPayload?: Payload;
     till?: 'forever' | number;

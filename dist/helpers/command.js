@@ -32,14 +32,14 @@ export class Command {
         if (!this.states)
             return;
         const stateChangeHandler = () => __awaiter(this, void 0, void 0, function* () {
-            if (!this.msg || !this.states || !this.msgPayload)
+            if (!this.sent || !this.states || !this.msgPayload)
                 return;
             if (typeof this.till === 'number' || typeof this.till === 'undefined') {
                 if (typeof this.till === 'undefined')
                     this.till = 15;
-                if (Date.now() - this.msg.createdTimestamp >= this.till * 60 * 1000) {
+                if (Date.now() - this.sent.createdTimestamp >= this.till * 60 * 1000) {
                     if (this.strict) {
-                        let e = err(`a msg listening for states since ${this.msg.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
+                        let e = err(`a msg listening for states since ${this.sent.createdTimestamp} for ${this.till * 60 * 1000}ms got expired and is not listening now`, this.name, true);
                         console.log(e);
                     }
                     this.states.event.removeListener('stateChange', stateChangeHandler);
@@ -53,7 +53,7 @@ export class Command {
             let newPayload = typeof this.msgPayload == 'string'
                 ? newPayloadString : JSON.parse(newPayloadString);
             try {
-                yield this.msg.edit(newPayload);
+                yield this.sent.edit(newPayload);
             }
             catch (e) {
                 if (this.strict) {
@@ -130,7 +130,8 @@ export class Command {
             else {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
-            return yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.reply(data));
+            this.sent = yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.reply(data));
+            return this.sent;
         });
     }
     /**Reply using this if there are states to manage */
@@ -149,7 +150,8 @@ export class Command {
             else {
                 data = JSON.parse(formatString(JSON.stringify(this.msgPayload), this.states));
             }
-            return yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.channel.send(data));
+            this.sent = yield ((_b = this.msg) === null || _b === void 0 ? void 0 : _b.channel.send(data));
+            return this.sent;
         });
     }
 }
