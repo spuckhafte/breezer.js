@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { err } from "./funcs.js";
 import { extractFieldValuesHandler } from "./handlers.js";
 const regex = {
-    stateOperateExp: /{{[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+}}/g,
+    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+>>/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 };
 export class Command {
@@ -174,7 +174,7 @@ function formatString(text, states) {
     const operations = text.match(regex.stateOperateExp);
     //@ts-ignore - operations is not null, cause we are already checking for it (look up)
     for (let rawOperation of operations) {
-        let operation = rawOperation.replace(/{{|}}/g, '');
+        let operation = rawOperation.replace(/<<|>>/g, '');
         operation = stateExtracter(operation, states);
         let afterOperation;
         try {

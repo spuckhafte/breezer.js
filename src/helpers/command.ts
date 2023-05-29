@@ -6,7 +6,7 @@ import { StateManager } from "./stateManager.js";
 
 
 const regex = {
-    stateOperateExp: /{{[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+}}/g,
+    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+>>/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 }
 
@@ -185,7 +185,7 @@ function formatString(text:string, states:StateManager) {
     const operations = text.match(regex.stateOperateExp);
     //@ts-ignore - operations is not null, cause we are already checking for it (look up)
     for (let rawOperation of operations) {
-        let operation = rawOperation.replace(/{{|}}/g, '');
+        let operation = rawOperation.replace(/<<|>>/g, '');
         operation = stateExtracter(operation, states);
         let afterOperation:any;
         try {
