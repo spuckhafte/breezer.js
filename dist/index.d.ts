@@ -1,4 +1,4 @@
-import discord from 'discord.js';
+import discord, { Message, PermissionResolvable } from 'discord.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
 import { buttonSignal } from './helpers/funcs.js';
@@ -18,4 +18,7 @@ declare class Bot {
     });
     go(cb?: CallableFunction): Promise<void>;
 }
-export { Bot, Command, StateManager, buttonSignal };
+/**Check if the bot has a specific perm */
+declare function hasPermInGuild(perm: PermissionResolvable, msg: Message): boolean | undefined;
+declare function hasPermInChannel(perm: PermissionResolvable, msg: Message, userId?: string): Promise<boolean>;
+export { Bot, Command, StateManager, buttonSignal, hasPermInChannel, hasPermInGuild };

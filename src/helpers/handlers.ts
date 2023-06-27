@@ -19,5 +19,5 @@ export const extractFieldValuesHandler = {
 export function revealNameOfCmd(content:string, prefix:string) {
     content = content.trim();
     if (!content.startsWith(prefix)) return false;
-    return content.replace(prefix, '').replace(/[ ]+/g, ' ').trim().split(' ')[0]
+    return content.replace(prefix, '').replace(/[ ]+/g, ' ').trim().split(' ')[0].toLowerCase();
 }

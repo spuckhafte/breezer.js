@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, PermissionResolvable, PremiumTier, TextChannel } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { err } from "./funcs.js";
 import { extractFieldValuesHandler } from "./handlers.js";
@@ -162,6 +162,19 @@ export class Command {
 
         this.sent = await this.msg?.channel.send(data);
         return this.sent;
+    }
+
+    /**Check if the bot has a specific perm in the guild */
+    hasPermInGuild(perm:PermissionResolvable) {
+        const channel = this.msg?.channel as TextChannel;
+        return channel.guild.members.me?.permissionsIn(channel).has(perm);
+    }
+
+    async hasPermInChannel(perm:PermissionResolvable) {
+        const channel = this.msg?.channel as TextChannel;
+        const user = await this.msg?.guild?.members.fetch(this.msg.author.id);
+        if (!user) return false;
+        return channel.permissionsFor(user).has(perm);
     }
 }
 

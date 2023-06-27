@@ -56,4 +56,20 @@ class Bot {
         });
     }
 }
-export { Bot, Command, StateManager, buttonSignal };
+/**Check if the bot has a specific perm */
+function hasPermInGuild(perm, msg) {
+    var _a;
+    const channel = msg.channel;
+    return (_a = channel.guild.members.me) === null || _a === void 0 ? void 0 : _a.permissionsIn(channel).has(perm);
+}
+function hasPermInChannel(perm, msg, userId) {
+    var _a;
+    return __awaiter(this, void 0, void 0, function* () {
+        const channel = msg.channel;
+        const user = yield ((_a = msg.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(userId !== null && userId !== void 0 ? userId : msg.author.id));
+        if (!user)
+            return false;
+        return channel.permissionsFor(user).has(perm);
+    });
+}
+export { Bot, Command, StateManager, buttonSignal, hasPermInChannel, hasPermInGuild };

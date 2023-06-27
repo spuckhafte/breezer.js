@@ -1,4 +1,4 @@
-import discord, { Intents } from 'discord.js';
+import discord, { Intents, Message, PermissionResolvable, TextChannel } from 'discord.js';
 import fs from 'fs';
 import { TypicalCommand } from './helpers/command.js';
 import { revealNameOfCmd } from './helpers/handlers.js';
@@ -58,4 +58,17 @@ class Bot {
     }
 }
 
-export { Bot, Command, StateManager, buttonSignal };
+/**Check if the bot has a specific perm */
+function hasPermInGuild(perm:PermissionResolvable, msg:Message) {
+    const channel = msg.channel as TextChannel;
+    return channel.guild.members.me?.permissionsIn(channel).has(perm);
+}
+
+async function hasPermInChannel(perm:PermissionResolvable, msg:Message, userId?:string) {
+    const channel = msg.channel as TextChannel;
+    const user = await msg.guild?.members.fetch(userId ?? msg.author.id);
+    if (!user) return false;
+    return channel.permissionsFor(user).has(perm);
+}
+
+export { Bot, Command, StateManager, buttonSignal, hasPermInChannel, hasPermInGuild };

@@ -155,6 +155,22 @@ export class Command {
             return this.sent;
         });
     }
+    /**Check if the bot has a specific perm in the guild */
+    hasPermInGuild(perm) {
+        var _a, _b;
+        const channel = (_a = this.msg) === null || _a === void 0 ? void 0 : _a.channel;
+        return (_b = channel.guild.members.me) === null || _b === void 0 ? void 0 : _b.permissionsIn(channel).has(perm);
+    }
+    hasPermInChannel(perm) {
+        var _a, _b, _c;
+        return __awaiter(this, void 0, void 0, function* () {
+            const channel = (_a = this.msg) === null || _a === void 0 ? void 0 : _a.channel;
+            const user = yield ((_c = (_b = this.msg) === null || _b === void 0 ? void 0 : _b.guild) === null || _c === void 0 ? void 0 : _c.members.fetch(this.msg.author.id));
+            if (!user)
+                return false;
+            return channel.permissionsFor(user).has(perm);
+        });
+    }
 }
 export class TypicalCommand extends Command {
     constructor() {

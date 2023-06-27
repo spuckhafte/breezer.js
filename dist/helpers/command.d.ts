@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, PermissionResolvable } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { StateManager } from "./stateManager.js";
 export declare class Command {
@@ -20,6 +20,9 @@ export declare class Command {
     reply(payload: Payload): Promise<Message<boolean> | undefined>;
     /**Reply using this if there are states to manage */
     send(payload: Payload): Promise<Message<boolean> | undefined>;
+    /**Check if the bot has a specific perm in the guild */
+    hasPermInGuild(perm: PermissionResolvable): boolean | undefined;
+    hasPermInChannel(perm: PermissionResolvable): Promise<boolean>;
 }
 export declare class TypicalCommand extends Command {
     constructor();
