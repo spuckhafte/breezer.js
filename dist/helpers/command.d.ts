@@ -20,9 +20,8 @@ export declare class Command {
     reply(payload: Payload): Promise<Message<boolean> | undefined>;
     /**Reply using this if there are states to manage */
     send(payload: Payload): Promise<Message<boolean> | undefined>;
-    /**Check if the bot has a specific perm in the guild */
-    hasPermInGuild(perm: PermissionResolvable): boolean | undefined;
-    hasPermInChannel(perm: PermissionResolvable): Promise<boolean>;
+    /**Check if the bot has a specific perm */
+    botHasPerm(perm: PermissionResolvable): boolean | undefined;
 }
 export declare class TypicalCommand extends Command {
     constructor();

@@ -58,17 +58,13 @@ class Bot {
     }
 }
 
-/**Check if the bot has a specific perm */
-function hasPermInGuild(perm:PermissionResolvable, msg:Message) {
+/**Check if a user has a specific perm */
+async function userHasPerm(perm:PermissionResolvable, userId:string, msg:Message) {
     const channel = msg.channel as TextChannel;
-    return channel.guild.members.me?.permissionsIn(channel).has(perm);
-}
-
-async function hasPermInChannel(perm:PermissionResolvable, msg:Message, userId?:string) {
-    const channel = msg.channel as TextChannel;
-    const user = await msg.guild?.members.fetch(userId ?? msg.author.id);
+    const user = await msg.guild?.members.fetch(userId);
     if (!user) return false;
     return channel.permissionsFor(user).has(perm);
 }
 
-export { Bot, Command, StateManager, buttonSignal, hasPermInChannel, hasPermInGuild };
+
+export { Bot, Command, StateManager, buttonSignal, userHasPerm };

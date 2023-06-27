@@ -18,7 +18,6 @@ declare class Bot {
     });
     go(cb?: CallableFunction): Promise<void>;
 }
-/**Check if the bot has a specific perm */
-declare function hasPermInGuild(perm: PermissionResolvable, msg: Message): boolean | undefined;
-declare function hasPermInChannel(perm: PermissionResolvable, msg: Message, userId?: string): Promise<boolean>;
-export { Bot, Command, StateManager, buttonSignal, hasPermInChannel, hasPermInGuild };
+/**Check if a user has a specific perm */
+declare function userHasPerm(perm: PermissionResolvable, msg: Message, userId: string): Promise<boolean>;
+export { Bot, Command, StateManager, buttonSignal, userHasPerm };

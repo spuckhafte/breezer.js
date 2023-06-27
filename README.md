@@ -153,7 +153,7 @@ export default class extends Command {
         await this.send({
             embeds: [
                 new MessageEmbed({
-                    title: `${by} x $count$ = {{ ${by} * $count$ }}`
+                    title: `${by} x $count$ = << ${by} * $count$ >>`
                 })
             ]
         });
@@ -169,19 +169,19 @@ States are special values that when referred in message payload in a special way
 We mention them inside strings using the `$` reference, like this:<br>
 `$statename$`.
 
-We can also do operations on states, only when they lie inside `{{ ... }}`
+We can also do operations on states, only when they lie inside `<< ... >>`
 ```js
 // js methods
 {
-  content: "Answer is: {{ ['first', 'third'].includes('$answer$') }}"
+  content: "Answer is: << ['first', 'third'].includes('$answer$') >>"
 }
 // ternary operations
 {
-  content: "Count is: {{ $count$ > 5 : 'Big' :'Small' }}"
+  content: "Count is: << $count$ > 5 : 'Big' :'Small' >>"
 }
 // arithmetic operations
 {
-  content: "Answer = {{ $num1$ + (($num2$ - 3) * 5)/10 }}"
+  content: "Answer = << $num1$ + (($num2$ - 3) * 5)/10 >>"
   // yes, you can have 2 state in an operation!
 }
 ```

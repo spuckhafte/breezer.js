@@ -164,17 +164,10 @@ export class Command {
         return this.sent;
     }
 
-    /**Check if the bot has a specific perm in the guild */
-    hasPermInGuild(perm:PermissionResolvable) {
+    /**Check if the bot has a specific perm */
+    botHasPerm(perm:PermissionResolvable) {
         const channel = this.msg?.channel as TextChannel;
         return channel.guild.members.me?.permissionsIn(channel).has(perm);
-    }
-
-    async hasPermInChannel(perm:PermissionResolvable) {
-        const channel = this.msg?.channel as TextChannel;
-        const user = await this.msg?.guild?.members.fetch(this.msg.author.id);
-        if (!user) return false;
-        return channel.permissionsFor(user).has(perm);
     }
 }
 
