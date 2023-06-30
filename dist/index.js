@@ -42,6 +42,7 @@ class Bot {
         return __awaiter(this, void 0, void 0, function* () {
             yield this.bot.login(this.token);
             this.bot.on('messageCreate', (msg) => __awaiter(this, void 0, void 0, function* () {
+                msg.content = msg.content.toLowerCase();
                 const cmdName = revealNameOfCmd(msg.content, this.prefix);
                 if (!cmdName || !this.commands.includes(cmdName))
                     return;

@@ -46,6 +46,7 @@ class Bot {
     async go(cb?:CallableFunction) {
         await this.bot.login(this.token);
         this.bot.on('messageCreate', async msg => {
+            msg.content = msg.content.toLowerCase();
             const cmdName = revealNameOfCmd(msg.content, this.prefix);
             if (!cmdName || !this.commands.includes(cmdName)) return;
             let cmdClass = this.commandObjects[cmdName] as any;
