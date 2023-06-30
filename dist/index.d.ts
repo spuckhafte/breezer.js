@@ -19,5 +19,5 @@ declare class Bot {
     go(cb?: CallableFunction): Promise<void>;
 }
 /**Check if a user has a specific perm */
-declare function userHasPerm(perm: PermissionResolvable, msg: Message, userId: string): Promise<boolean>;
+declare function userHasPerm(perm: PermissionResolvable, userId: string, msg: Message): Promise<boolean>;
 export { Bot, Command, StateManager, buttonSignal, userHasPerm };

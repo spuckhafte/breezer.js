@@ -57,7 +57,7 @@ class Bot {
     }
 }
 /**Check if a user has a specific perm */
-function userHasPerm(perm, msg, userId) {
+function userHasPerm(perm, userId, msg) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
         const channel = msg.channel;
