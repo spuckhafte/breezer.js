@@ -33,6 +33,6 @@ export class StateManager {
 function _structuredClone<T>(value: T): T {
     // @ts-ignore
     if (global.structuredClone) {
-        return structuredClone(value)
+        return global.structuredClone(value)
     } else return JSON.parse(JSON.stringify(value)) as T;
 }
