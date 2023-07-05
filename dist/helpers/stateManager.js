@@ -21,3 +21,11 @@ export class StateManager {
         return new StateManager(structuredClone(this.states));
     }
 }
+function _structuredClone(value) {
+    // @ts-ignore
+    if (global.structuredClone) {
+        return structuredClone(value);
+    }
+    else
+        return JSON.parse(JSON.stringify(value));
+}
