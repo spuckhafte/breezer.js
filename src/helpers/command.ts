@@ -6,7 +6,7 @@ import { StateManager } from "./stateManager.js";
 
 
 const regex = {
-    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+>>/g,
+    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+?>>/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 }
 

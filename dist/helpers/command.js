@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import { err } from "./funcs.js";
 import { extractFieldValuesHandler } from "./handlers.js";
 const regex = {
-    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+>>/g,
+    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+?>>/g,
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 };
 export class Command {
