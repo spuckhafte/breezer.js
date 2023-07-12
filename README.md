@@ -239,3 +239,7 @@ So buttonSignal accepts 3 arguments
     - **time**: the time interval (in ms) for which the button will be valid and clicks will matter
 
 This function returns the normal discord's interaction listener listening for `collect` and `end`. 
+
+
+### TODO
+Effects
