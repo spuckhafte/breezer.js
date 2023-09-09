@@ -1,4 +1,4 @@
-import { Message } from "discord.js";
+import { Message, PermissionResolvable, TextChannel } from "discord.js";
 
 export function err(desc:string, cmd?:string, warn=false) {
     return `[${warn ? 'warn' : 'err'}][cmd: ${cmd}] ${desc}`
@@ -27,4 +27,12 @@ export function buttonSignal(
         }
     );
     return collector;
+}
+
+/**Check if a user has a specific perm */
+export async function userHasPerm(perm:PermissionResolvable, userId:string, msg:Message) {
+    const channel = msg.channel as TextChannel;
+    const user = await msg.guild?.members.fetch(userId);
+    if (!user) return false;
+    return channel.permissionsFor(user).has(perm);
 }

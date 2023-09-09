@@ -4,7 +4,7 @@ import { TypicalCommand } from './helpers/command.js';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
-import { buttonSignal } from './helpers/funcs.js';
+import { buttonSignal, userHasPerm } from './helpers/funcs.js';
 
 class Bot {
     commands:string[]; 
@@ -57,14 +57,6 @@ class Bot {
         });
         if (cb) cb();
     }
-}
-
-/**Check if a user has a specific perm */
-async function userHasPerm(perm:PermissionResolvable, userId:string, msg:Message) {
-    const channel = msg.channel as TextChannel;
-    const user = await msg.guild?.members.fetch(userId);
-    if (!user) return false;
-    return channel.permissionsFor(user).has(perm);
 }
 
 

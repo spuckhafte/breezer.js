@@ -1,4 +1,4 @@
-import { Message, PermissionResolvable, PremiumTier, TextChannel } from "discord.js";
+import { Message, PermissionResolvable, TextChannel } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { err } from "./funcs.js";
 import { extractFieldValuesHandler } from "./handlers.js";

@@ -231,7 +231,7 @@ buttonSignal(
  */
 ```
 So buttonSignal accepts 3 arguments
- - **users**: array containing the user id who can click the button
+ - **users**: array containing the user id who can click the button *(empty-array: anyone click the button)*
  - **msg**: the message that contains the buttons
  - **props**: an optional parameter specifying these 3 properties-
     - **customId**: the only button from the row that you'll listen to (its id)
@@ -240,6 +240,16 @@ So buttonSignal accepts 3 arguments
 
 This function returns the normal discord's interaction listener listening for `collect` and `end`. 
 
+### HasPerm Methods
+A method and a function to check if the bot or any user has certain perm in the channel linked to a cmd's msg.
 
-### TODO
-Effects
+#### Inside a Command class (checks only for the bot)
+```ts
+this.botHasPerm( perm: PermissionResolvable ): boolean
+```
+
+#### Anywhere (checks for any user)
+```ts
+import { userHasPerm } from 'breezer.js';
+userHasPerm( perm, userId: string, msg: Message ): Promise<boolean>
+```
