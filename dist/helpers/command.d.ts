@@ -1,7 +1,7 @@
 import { Message, PermissionResolvable } from "discord.js";
 import { CmdStructure, CommandSettings, Payload } from "../../types";
 import { StateManager } from "./stateManager.js";
-export declare class Command {
+export declare class Command<Structure extends (string | number | null)[]> {
     structure: CmdStructure[];
     name?: string;
     strict: boolean;
@@ -13,7 +13,7 @@ export declare class Command {
     till?: 'forever' | number;
     constructor(settings: CommandSettings);
     /**Extract fields from a command as per their defined structure */
-    extract(): (string | number)[];
+    extract(): Structure;
     /**Add your logics for the command inside this function */
     execute(): Promise<void>;
     /**Send using this if there are states to manage */
@@ -23,7 +23,7 @@ export declare class Command {
     /**Check if the bot has a specific perm */
     botHasPerm(perm: PermissionResolvable): boolean | undefined;
 }
-export declare class TypicalCommand extends Command {
+export declare class TypicalCommand<T extends []> extends Command<T> {
     constructor();
     execute(): Promise<void>;
 }

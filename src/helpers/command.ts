@@ -10,7 +10,7 @@ const regex = {
     stateExp: /\$[a-zA-Z0-9-]+\$/g
 }
 
-export class Command {
+export class Command<Structure extends (string|number|null)[]> {
     structure:CmdStructure[];
     name?:string;
     strict:boolean;
@@ -100,13 +100,13 @@ export class Command {
             }
         }
 
-        const extracted:(string|number)[] = [];
+        const extracted = [] as unknown as Structure;
         for (let field in fields) {
             try {
                 if (+field == this.structure.length - 1 && +field !== fields.length - 1) {
                     if (this.structure[field].includes('string')) {
                         let value = fields.splice(+field).join(' ');
-                        extracted.push(value);
+                        extracted.push(value as never);
                         return extracted;
                     }
                 }
@@ -115,11 +115,11 @@ export class Command {
                     this.structure[field].split('|')[0] as 'number'|'string'
                 ](fields[field], this.strict, this.name);
 
-                extracted.push(data);
+                extracted.push(data as never);
             } catch (e) {
                 if (this.strict) {
                     throw Error(e as string);
-                } else extracted.push(fields[field]);
+                } else extracted.push(fields[field] as never);
             }
         }
         return extracted;   
@@ -171,7 +171,7 @@ export class Command {
     }
 }
 
-export class TypicalCommand extends Command {
+export class TypicalCommand<T extends []> extends Command<T> {
     constructor() {
         super({
             structure: [],

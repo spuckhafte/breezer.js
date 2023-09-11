@@ -7,22 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import discord, { Intents } from 'discord.js';
+import discord from 'discord.js';
 import fs from 'fs';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
-import { buttonSignal } from './helpers/funcs.js';
+import { buttonSignal, getIntents, userHasPerm } from './helpers/funcs.js';
 class Bot {
     constructor(options) {
-        let intents = [
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            Intents.FLAGS.MESSAGE_CONTENT,
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MEMBERS,
-            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
-        ];
+        let intents = getIntents();
         this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;
         this.cmdFolder = options.commandsFolder;
@@ -31,7 +24,8 @@ class Bot {
         this.bot = new discord.Client({ intents });
         let cmdsCollectd = {};
         for (let command of this.commands) {
-            import(`file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`).then(cmd => {
+            const cmdPath = `file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`;
+            import(cmdPath).then(cmd => {
                 if (cmd.default)
                     cmdsCollectd[command] = cmd.default;
             }).catch(e => console.log(e));
@@ -56,16 +50,5 @@ class Bot {
                 cb();
         });
     }
-}
-/**Check if a user has a specific perm */
-function userHasPerm(perm, userId, msg) {
-    var _a;
-    return __awaiter(this, void 0, void 0, function* () {
-        const channel = msg.channel;
-        const user = yield ((_a = msg.guild) === null || _a === void 0 ? void 0 : _a.members.fetch(userId));
-        if (!user)
-            return false;
-        return channel.permissionsFor(user).has(perm);
-    });
 }
 export { Bot, Command, StateManager, buttonSignal, userHasPerm };

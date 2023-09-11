@@ -47,7 +47,7 @@ Fill up some details and you're ready to *go()* !<br>
 ```js
 import { Command } from 'breezer.js/dist'
 
-export default class extends Command {
+export default class extends Command<[]> {
     constructor() {
         super({
             structure: [],
@@ -67,9 +67,14 @@ export default class extends Command {
 }
 ```
 Every command is a class, child of the `Command` class.<br>
+**Generic of class `Command<[]>`:** Defines the *type* of the structure of your cmd.
+    - helps in inferring the types of different fields returned by `this.extract()` *(explained later)*
 `structure` - defines a structure for your command.
 Helpful when extracting the fields of you commands.<br>
 This property will be better understood in the next command. Here there are no fields for this cmd => no structure.<br>
+
+*Reason why we define the structure twice is because, `Generic` helps in inferring the type properly and the property `structure` helps in actual conversion of field (say to number) and raising errors in `strict` mode.
+
 `strict` - set it to true if you want to recieve errors/warnings when:
  - user does not follow the defined structure of the cmd
  - a deleted msg listens for certain state(s)
@@ -84,7 +89,7 @@ This feature should only be turned on during development.
 ```js
 import { Command } from 'breezer.js'
 
-export default class extends Command {
+export default class extends Command<[string]> {
     constructor() {
         super({
             structure: ['string'],
@@ -93,6 +98,7 @@ export default class extends Command {
     }
 
     async execute() {
+        // operation: string
         const [operation] = this.extract();
         let value;
         try {
@@ -137,7 +143,7 @@ import { MessageEmbed } from 'discord.js';
 const state = new StateManager({
     count: 1
 });
-export default class extends Command {
+export default class extends Command<[number]> {
     constructor() {
         super({
             name: 'mul',
@@ -148,6 +154,7 @@ export default class extends Command {
         });
     }
     async execute() {
+        // by: number
         const [by] = this.extract();
 
         await this.send({

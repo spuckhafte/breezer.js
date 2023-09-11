@@ -1,29 +1,22 @@
-import discord, { Intents, Message, PermissionResolvable, TextChannel } from 'discord.js';
+import discord from 'discord.js';
 import fs from 'fs';
 import { TypicalCommand } from './helpers/command.js';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
-import { buttonSignal, userHasPerm } from './helpers/funcs.js';
+import { buttonSignal, getIntents, userHasPerm } from './helpers/funcs.js';
 
 class Bot {
     commands:string[]; 
     bot:discord.Client;
     prefix:string;
-    private commandObjects:{ [index: string]: TypicalCommand };
+    private commandObjects:{ [index: string]: TypicalCommand<[]> };
     private token:string;
     private cmdFolder:string;
     private lang:string
 
     constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts' }) {
-        let intents = [
-            Intents.FLAGS.GUILD_MESSAGES,
-            Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-            Intents.FLAGS.MESSAGE_CONTENT,
-            Intents.FLAGS.GUILDS,
-            Intents.FLAGS.GUILD_MEMBERS,
-            Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
-        ]
+        let intents = getIntents();
 
         this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;
@@ -33,9 +26,10 @@ class Bot {
 
         this.bot = new discord.Client({ intents });
 
-        let cmdsCollectd:{ [index: string]: TypicalCommand } = {};
+        let cmdsCollectd:{ [index: string]: TypicalCommand<[]> } = {};
         for (let command of this.commands) {
-            import(`file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`).then(cmd => {
+            const cmdPath = `file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`;
+            import(cmdPath).then(cmd => {
                 if (cmd.default)
                     cmdsCollectd[command] = cmd.default;
             }).catch(e => console.log(e));
@@ -48,9 +42,11 @@ class Bot {
         this.bot.on('messageCreate', async msg => {
             msg.content = msg.content.toLowerCase();
             const cmdName = revealNameOfCmd(msg.content, this.prefix);
+
             if (!cmdName || !this.commands.includes(cmdName)) return;
             let cmdClass = this.commandObjects[cmdName] as any;
-            const cmd = new cmdClass() as TypicalCommand
+            const cmd = new cmdClass();
+
             cmd.content = msg.content.replace(this.prefix, '').replace(/[ ]+/g, ' ').trim();
             cmd.msg = msg;
             cmd.execute();

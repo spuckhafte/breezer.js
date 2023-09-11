@@ -1,7 +1,7 @@
-import discord, { Message, PermissionResolvable } from 'discord.js';
+import discord from 'discord.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
-import { buttonSignal } from './helpers/funcs.js';
+import { buttonSignal, userHasPerm } from './helpers/funcs.js';
 declare class Bot {
     commands: string[];
     bot: discord.Client;
@@ -18,6 +18,4 @@ declare class Bot {
     });
     go(cb?: CallableFunction): Promise<void>;
 }
-/**Check if a user has a specific perm */
-declare function userHasPerm(perm: PermissionResolvable, userId: string, msg: Message): Promise<boolean>;
 export { Bot, Command, StateManager, buttonSignal, userHasPerm };
