@@ -17,7 +17,7 @@ class Bot {
     private cmdFolder:string;
     private lang:string
 
-    constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts', intents?: number }) {
+    constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts', intents?: number[] }) {
 
         this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;

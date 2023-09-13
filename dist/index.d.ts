@@ -16,7 +16,7 @@ declare class Bot {
         token: string;
         prefix: string;
         lang: '.js' | '.ts';
-        intents?: number;
+        intents?: number[];
     });
     go(cb?: CallableFunction): Promise<void>;
 }
