@@ -6,6 +6,7 @@ declare class Bot {
     commands: string[];
     bot: discord.Client;
     prefix: string;
+    intents?: number[];
     private commandObjects;
     private token;
     private cmdFolder;
@@ -15,6 +16,7 @@ declare class Bot {
         token: string;
         prefix: string;
         lang: '.js' | '.ts';
+        intents?: number;
     });
     go(cb?: CallableFunction): Promise<void>;
 }

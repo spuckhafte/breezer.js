@@ -10,13 +10,14 @@ class Bot {
     commands:string[]; 
     bot:discord.Client;
     prefix:string;
+    intents?: number[];
+
     private commandObjects:{ [index: string]: TypicalCommand<[]> };
     private token:string;
     private cmdFolder:string;
     private lang:string
 
-    constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts' }) {
-        let intents = getIntents();
+    constructor(options:{ commandsFolder:string, token:string, prefix:string, lang:'.js'|'.ts', intents?: number }) {
 
         this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;
@@ -24,7 +25,7 @@ class Bot {
         this.prefix = options.prefix;
         this.lang = options.lang;
 
-        this.bot = new discord.Client({ intents });
+        this.bot = new discord.Client({ intents: this.intents ?? getIntents() });
 
         let cmdsCollectd:{ [index: string]: TypicalCommand<[]> } = {};
         for (let command of this.commands) {

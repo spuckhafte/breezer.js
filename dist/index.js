@@ -15,13 +15,13 @@ import { StateManager } from './helpers/stateManager.js';
 import { buttonSignal, getIntents, userHasPerm } from './helpers/funcs.js';
 class Bot {
     constructor(options) {
-        let intents = getIntents();
+        var _a;
         this.commands = fs.readdirSync(options.commandsFolder).map(i => i.replace(options.lang, ''));
         this.token = options.token;
         this.cmdFolder = options.commandsFolder;
         this.prefix = options.prefix;
         this.lang = options.lang;
-        this.bot = new discord.Client({ intents });
+        this.bot = new discord.Client({ intents: (_a = this.intents) !== null && _a !== void 0 ? _a : getIntents() });
         let cmdsCollectd = {};
         for (let command of this.commands) {
             const cmdPath = `file://${process.cwd()}/${this.cmdFolder}/${command}${this.lang}`;

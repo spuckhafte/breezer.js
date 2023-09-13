@@ -33,7 +33,8 @@ import { Bot } from 'breezer.js'
 const bot = new Bot({
     token: "<BOT_TOKEN>",
     prefix: "+",
-    commandsFolder: "commands"
+    commandsFolder: "commands",
+    // intents: []
 });
 
 bot.go(() => console.log('Logged In'));
@@ -43,9 +44,11 @@ It is as easy as its looks.<br>
 Everything else looks quite easy to follow up.<br>
 Fill up some details and you're ready to *go()* !<br>
 
+*Note: There is also an [optional] property to have custom intents (Breezer automatically sets the most common ones by default)*.
+
 **`commands/ping.js` :**
 ```js
-import { Command } from 'breezer.js/dist'
+import { Command } from 'breezer.js'
 
 export default class extends Command<[]> {
     constructor() {
