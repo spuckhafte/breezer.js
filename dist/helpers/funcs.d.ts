@@ -1,5 +1,4 @@
 import { Message, PermissionResolvable } from "discord.js";
-export declare function err(desc: string, cmd?: string, warn?: boolean): string;
 /**Listen to button interactions
  * @param users - array of user-ids who can click on button, empty array => anyone can click
  * @param msg - the msg sent containing the buttons
@@ -12,4 +11,3 @@ export declare function buttonSignal(users: string[], msg: Message | undefined, 
 }): import("discord.js").InteractionCollector<import("discord.js").MessageComponentInteraction<import("discord.js").CacheType>> | undefined;
 /**Check if a user has a specific perm */
 export declare function userHasPerm(perm: PermissionResolvable, userId: string, msg: Message): Promise<boolean>;
-export declare function getIntents(): number[];

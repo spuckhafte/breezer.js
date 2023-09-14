@@ -7,10 +7,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Intents } from "discord.js";
-export function err(desc, cmd, warn = false) {
-    return `[${warn ? 'warn' : 'err'}][cmd: ${cmd}] ${desc}`;
-}
 /**Listen to button interactions
  * @param users - array of user-ids who can click on button, empty array => anyone can click
  * @param msg - the msg sent containing the buttons
@@ -40,14 +36,4 @@ export function userHasPerm(perm, userId, msg) {
             return false;
         return channel.permissionsFor(user).has(perm);
     });
-}
-export function getIntents() {
-    return [
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.MESSAGE_CONTENT,
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
-    ];
 }

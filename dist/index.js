@@ -12,7 +12,8 @@ import fs from 'fs';
 import { revealNameOfCmd } from './helpers/handlers.js';
 import { Command } from './helpers/command.js';
 import { StateManager } from './helpers/stateManager.js';
-import { buttonSignal, getIntents, userHasPerm } from './helpers/funcs.js';
+import { buttonSignal, userHasPerm } from './helpers/funcs.js';
+import { getIntents } from './helpers/handlers.js';
 class Bot {
     constructor(options) {
         var _a;

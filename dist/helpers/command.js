@@ -7,12 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { err } from "./funcs.js";
-import { extractFieldValuesHandler } from "./handlers.js";
-const regex = {
-    stateOperateExp: /<<[a-zA-Z0-9$%+\-*/()\[\]<>?:="'^.! ]+?>>/g,
-    stateExp: /\$[a-zA-Z0-9-]+\$/g
-};
+import { err } from "./handlers.js";
+import { extractFieldValuesHandler, formatString } from "./handlers.js";
 export class Command {
     constructor(settings) {
         this.content = '';
@@ -173,43 +169,4 @@ export class TypicalCommand extends Command {
         return __awaiter(this, void 0, void 0, function* () {
         });
     }
-}
-function formatString(text, states) {
-    if (!checkForOperation(text))
-        return stateExtracter(text, states);
-    const operations = text.match(regex.stateOperateExp);
-    //@ts-ignore - operations is not null, cause we are already checking for it (look up)
-    for (let rawOperation of operations) {
-        let operation = rawOperation.replace(/<<|>>/g, '');
-        operation = stateExtracter(operation, states);
-        let afterOperation;
-        try {
-            afterOperation = eval(operation);
-        }
-        catch (e) {
-            console.error(`[err] Invalid State Operation:\n\n${rawOperation}\n\n${e}`);
-        }
-        if (typeof afterOperation == 'undefined')
-            return text;
-        text = text.replace(rawOperation, afterOperation);
-    }
-    return stateExtracter(text, states);
-}
-function stateExtracter(text, states) {
-    const stateNames = text.match(regex.stateExp);
-    if (stateNames) {
-        for (let stateRaw of stateNames) {
-            const state = stateRaw.replace(/\$/g, '');
-            if (typeof states.states[state] == null)
-                continue;
-            let stateVal = states.get(state);
-            if (typeof stateVal == 'object')
-                stateVal = JSON.stringify(stateVal);
-            text = text.replace(stateRaw, `${stateVal}`);
-        }
-    }
-    return text;
-}
-function checkForOperation(text) {
-    return regex.stateOperateExp.test(text);
 }

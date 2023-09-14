@@ -1,8 +1,4 @@
-import { Intents, Message, PermissionResolvable, TextChannel } from "discord.js";
-
-export function err(desc:string, cmd?:string, warn=false) {
-    return `[${warn ? 'warn' : 'err'}][cmd: ${cmd}] ${desc}`
-}
+import { Message, PermissionResolvable, TextChannel } from "discord.js";
 
 /**Listen to button interactions
  * @param users - array of user-ids who can click on button, empty array => anyone can click
@@ -35,15 +31,4 @@ export async function userHasPerm(perm:PermissionResolvable, userId:string, msg:
     const user = await msg.guild?.members.fetch(userId);
     if (!user) return false;
     return channel.permissionsFor(user).has(perm);
-}
-
-export function getIntents() {
-    return [
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-        Intents.FLAGS.MESSAGE_CONTENT,
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS
-    ]
 }
