@@ -39,12 +39,11 @@ const bot = new Bot({
 
 bot.go(() => console.log('Logged In'));
 ```
-It is as easy as its looks.<br>
-`commandsFolder` folder is where all your commands will be stored.<br>
-Everything else looks quite easy to follow up.<br>
-Fill up some details and you're ready to *go()* !<br>
+It is as easy as it looks.<br>
+The `commandsFolder` is where all your commands will be stored.<br>
+Everything else is quite straightforward. Fill in some details and you’re ready to `go()`!
 
-*Note: There is also an [optional] property to have custom intents (Breezer automatically sets the most common ones by default)*.
+*Note: There is also an [optional] property to have custom intents. Breezer automatically sets the most common ones by default.*
 
 **`commands/ping.js` :**
 ```js
@@ -69,25 +68,31 @@ export default class extends Command<[]> {
     }
 }
 ```
-Every command is a class, child of the `Command` class.<br>
-**Generic of class `Command<[]>`:** Defines the *type* of the structure of your cmd.
-    - helps in inferring the types of different fields returned by `this.extract()` *(explained later)*
-`structure` - defines a structure for your command.
-Helpful when extracting the fields of you commands.<br>
-This property will be better understood in the next command. Here there are no fields for this cmd => no structure.<br>
+In this framework, every command is represented as a class that inherits from the `Command` class. Here's a breakdown of the key components:
 
-*Reason why we define the structure twice is because, `Generic` helps in inferring the type properly and the property `structure` helps in actual conversion of field (say to number) and raising errors in `strict` mode.
+1. **Command Class Generic Type (`Command<[]>`):**
+   - **Purpose:** This generic type defines the structure of your command.
+   - **Benefit:** It helps with type inference for different fields returned by the `this.extract()` method (which will be explained later).
 
-`strict` - set it to true if you want to recieve errors/warnings when:
- - user does not follow the defined structure of the cmd
- - a deleted msg listens for certain state(s)
- - an expired msg listens for state(s).
-  
-This feature should only be turned on during development.
+2. **`structure` Property:**
+   - **Purpose:** This property defines the structure of your command.
+   - **Benefit:** It is useful for extracting and validating the fields of your commands.
+   - **Note:** If there are no fields for a command, the `structure` property will be empty. Its utility will be clearer in the context of the next command.
 
-`name` - optional: will help in debugging in strict mode<br>
-`execute` - logics for your command will be defined here.
+3. **`strict` Property:**
+   - **Purpose:** When set to `true`, this property enables error and warning reporting for several scenarios:
+     - If a user does not follow the defined command structure.
+     - If a deleted message still listens for certain states.
+     - If an expired message listens for certain states.
+   - **Recommendation:** This feature should only be enabled during development to catch and address potential issues early.
 
+4. **`name` Property:**
+   - **Purpose:** This optional property helps with debugging, especially when `strict` mode is enabled.
+
+5. **`execute` Method:**
+   - **Purpose:** This is where you define the logic for what your command should do.
+
+By structuring your commands with these properties, you ensure that they are well-defined, validated, and easier to debug and maintain.
 **`commands/calc.js`:**
 ```js
 import { Command } from 'breezer.js'
@@ -114,10 +119,10 @@ export default class extends Command<[string]> {
     }
 }
 ```
-Here structure has `string` as its first and only option. Now the user can easily extract the first option using `this.extract`.<br>
+Here the `structure` has `string` as its first and only option. Now the user can easily extract the fields using `this.extract`.<br>
 
-*Context:* This string will be an expression `1*3`<br>
-*Warning:* Never use `eval` like this, who knows what the operation is.
+*Context:* The string that user provides in the field will be an expression: `1*3`<br>
+*Warning:* Never use `eval` in this manner, as the operation within the string is unknown and could be potentially dangerous.
 
 `Structure` can have these values:<br>
 ```js
@@ -174,12 +179,12 @@ export default class extends Command<[number]> {
     }
 }
 ```
-States are special values that when referred in message payload in a special way as string, update their reference in the original message as their value change.
+States are special values that, when referenced in the message payload using a specific "stringy" format, update their reference in the original message as their values change.
 
-We mention them inside strings using the `$` reference, like this:<br>
+We mention them inside strings using the `dollar reference`, like this:<br>
 `$statename$`.
 
-We can also do operations on states, only when they lie inside `<< ... >>`
+You can also do operations on states, only when they lie inside `<< ... >>`
 ```js
 // js methods
 {
@@ -196,9 +201,11 @@ We can also do operations on states, only when they lie inside `<< ... >>`
 }
 ```
 Inside the constructor:<br>
-`states`: this will be the instance of class `StateManager`. You can clone it to it independent or you can just refer the original object.<br>
-`till`: msg listen to its state(s) for a certain time, define that time in minutes in this property. (default: 15min).<br>
-Or set it to `forever`, it will always listen for the state(s).
+- `states`: This will be an instance of the `StateManager` class. You can either clone it to create an independent instance or refer to the original object directly.<br>
+  - *_Note:_ If you use the original `StateManager` object, the state value will be "cached" for each command a user runs. This means it will pick up the last updated value as the initial value, instead of using the hardcoded one inside the `StateManager` object.*<br>
+
+- `till`: msg listens to its state(s) for a defined duration, specified in minutes, using this property (default: 15 minutes).<br>
+Alternatively, set it to `"forever"` if you want the message to always listen for the state(s).
 
 This is what that example cmd (mul) looks in action:
  
@@ -210,7 +217,7 @@ These are some extra functions available in the library to make stuff easier.
 
 ### buttonSignal()
 This handler is a syntactic-sugar for `createMessageComponentCollector`.<br>
-This can be used in situations when one wants to collect button interactions when some specific users click the button.
+This can be used in situations when one wants to collect button interactions if some specific users click the button.
 
 ```js
 import { buttonSignal } from 'breezer.js'
@@ -240,13 +247,13 @@ buttonSignal(
     * every button in the "row"
  */
 ```
-So buttonSignal accepts 3 arguments
- - **users**: array containing the user id who can click the button *(empty-array: anyone click the button)*
- - **msg**: the message that contains the buttons
- - **props**: an optional parameter specifying these 3 properties-
-    - **customId**: the only button from the row that you'll listen to (its id)
-    - **max**: maximum valid clicks
-    - **time**: the time interval (in ms) for which the button will be valid and clicks will matter
+The `buttonSignal` function accepts three arguments:
+- **`users`:** An array containing the user IDs who are allowed to click the button. If the array is empty, anyone can click the button.
+- **`msg`:** The message that contains the buttons.
+- **`props`:** An optional parameter specifying the following properties:
+  - **`customId`:** The ID of the specific button in the row that you'll listen to.
+  - **`max`:** The maximum number of valid clicks.
+  - **`time`:** The time interval (in milliseconds) during which the button will be valid and clicks will be considered.
 
 This function returns the normal discord's interaction listener listening for `collect` and `end`. 
 
